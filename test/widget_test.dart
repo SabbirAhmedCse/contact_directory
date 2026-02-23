@@ -8,11 +8,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:contact_directory/main.dart';
 import 'package:contact_directory/features/police_contacts/domain/entities/contact.dart';
 import 'package:contact_directory/features/police_contacts/domain/repositories/contact_repository.dart';
 import 'package:contact_directory/features/police_contacts/domain/usecases/add_contact.dart';
 import 'package:contact_directory/features/police_contacts/domain/usecases/get_contacts.dart';
+import 'package:contact_directory/features/police_contacts/presentation/pages/contacts_page.dart';
+import 'package:contact_directory/main.dart';
 
 class _InMemoryContactRepository implements ContactRepository {
   final List<Contact> _contacts = <Contact>[
@@ -48,12 +49,10 @@ void main() {
       final GetContacts getContacts = GetContacts(repository);
       final AddContact addContact = AddContact(repository);
 
-      await tester.pumpWidget(
-        MyApp(
-          getContacts: getContacts,
-          addContact: addContact,
-        ),
-      );
+      ContactsDependencies.getContacts = getContacts;
+      ContactsDependencies.addContact = addContact;
+
+      await tester.pumpWidget(const MyApp());
       await tester.pumpAndSettle();
 
       expect(find.text('Police Contacts'), findsOneWidget);

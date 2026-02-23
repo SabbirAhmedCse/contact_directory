@@ -4,19 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/usecases/add_contact.dart';
 import '../../domain/usecases/get_contacts.dart';
+import '../../../core/presentation/widgets/common_text_field.dart';
 import '../bloc/contacts_bloc.dart';
 import '../bloc/contacts_event.dart';
 import '../bloc/contacts_state.dart';
 
-class ContactsPage extends StatefulWidget {
-  final GetContacts getContacts;
-  final AddContact addContact;
+class ContactsDependencies {
+  static late GetContacts getContacts;
+  static late AddContact addContact;
+}
 
-  const ContactsPage({
-    super.key,
-    required this.getContacts,
-    required this.addContact,
-  });
+class ContactsPage extends StatefulWidget {
+  const ContactsPage({super.key});
 
   @override
   State<ContactsPage> createState() => _ContactsPageState();
@@ -56,8 +55,8 @@ class _ContactsPageState extends State<ContactsPage> {
     return BlocProvider<ContactsBloc>(
       create: (BuildContext context) {
         return ContactsBloc(
-          getContacts: widget.getContacts,
-          addContact: widget.addContact,
+          getContacts: ContactsDependencies.getContacts,
+          addContact: ContactsDependencies.addContact,
         )..add(const LoadContacts());
       },
       child: Scaffold(
@@ -81,21 +80,17 @@ class _ContactsPageState extends State<ContactsPage> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                        child: TextField(
+                        child: CommonTextField(
                           controller: _nameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Name',
-                          ),
+                          label: 'Name',
                         ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: TextField(
+                        child: CommonTextField(
                           controller: _phoneController,
+                          label: 'Phone',
                           keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            labelText: 'Phone',
-                          ),
                         ),
                       ),
                       const SizedBox(width: 16),

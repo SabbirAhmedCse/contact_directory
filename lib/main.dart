@@ -1,54 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 
+import 'features/core/presentation/routes/app_router.dart';
+import 'features/core/presentation/routes/app_routes.dart';
+import 'features/police_contacts/presentation/pages/contacts_page.dart';
 import 'features/police_contacts/data/datasources/contact_local_data_source.dart';
+import 'features/police_contacts/data/datasources/contact_remote_data_source.dart';
 import 'features/police_contacts/data/repositories/contact_repository_impl.dart';
 import 'features/police_contacts/domain/usecases/add_contact.dart';
 import 'features/police_contacts/domain/usecases/get_contacts.dart';
-import 'features/police_contacts/presentation/pages/contacts_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await Hive.initFlutter();
 
   final Box<Map> contactsBox = await Hive.openBox<Map>('contactsBox');
 
   final ContactLocalDataSource localDataSource =
       HiveContactLocalDataSource(contactsBox);
-  final ContactRepositoryImpl repository =
-      ContactRepositoryImpl(localDataSource);
+
+  final DatabaseReference firebaseRef =
+      FirebaseDatabase.instance.ref('police_contacts');
+
+  final ContactRepositoryImpl repository = ContactRepositoryImpl(
+    localDataSource,
+    remoteDataSource: FirebaseContactRemoteDataSource(firebaseRef),
+  );
   final GetContacts getContacts = GetContacts(repository);
   final AddContact addContact = AddContact(repository);
 
-  runApp(
-    MyApp(
-      getContacts: getContacts,
-      addContact: addContact,
-    ),
-  );
+  ContactsDependencies.getContacts = getContacts;
+  ContactsDependencies.addContact = addContact;
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final GetContacts getContacts;
-  final AddContact addContact;
-
   const MyApp({
     super.key,
-    required this.getContacts,
-    required this.addContact,
   });
 
   @override
   Widget build(BuildContext context) {
+    const AppRouter router = AppRouter();
     return MaterialApp(
       title: 'Police Contacts',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
       ),
-      home: ContactsPage(
-        getContacts: getContacts,
-        addContact: addContact,
-      ),
+      initialRoute: AppRoutes.home,
+      onGenerateRoute: router.generateRoute,
     );
   }
 }
