@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'features/core/presentation/routes/app_router.dart';
 import 'features/core/presentation/routes/app_routes.dart';
@@ -61,14 +62,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const AppRouter router = AppRouter();
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Police Contacts',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-      ),
-      initialRoute: AppRoutes.home,
-      onGenerateRoute: router.generateRoute,
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Police Contacts',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+          ),
+          initialRoute: AppRoutes.home,
+          onGenerateRoute: router.generateRoute,
+        );
+      },
     );
   }
 }

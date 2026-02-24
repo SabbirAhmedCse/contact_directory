@@ -17,6 +17,7 @@ class CommonDropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
+      isExpanded: true,
       initialValue: initialValue,
       items: items,
       onChanged: onChanged,
