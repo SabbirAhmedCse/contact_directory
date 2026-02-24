@@ -30,10 +30,10 @@ class _ContactsPageState extends State<ContactsPage> {
   final TextEditingController _phoneController = TextEditingController();
   final List<Unit> _units = <Unit>[];
   Unit? _selectedUnit;
-  final List<Unit> _childUnits = <Unit>[];
-  Unit? _selectedChildUnit;
-  final List<Unit> _grandChildUnits = <Unit>[];
-  Unit? _selectedGrandChildUnit;
+  final List<Unit> _subUnits = <Unit>[];
+  Unit? _selectedSubUnit;
+  final List<Unit> _subSubUnits = <Unit>[];
+  Unit? _selectedSubSubUnit;
 
   @override
   void initState() {
@@ -50,24 +50,11 @@ class _ContactsPageState extends State<ContactsPage> {
       _units
         ..clear()
         ..addAll(units);
-      if (_units.isNotEmpty) {
-        _selectedUnit = _units.first;
-        _childUnits
-          ..clear()
-          ..addAll(_selectedUnit!.units);
-        _selectedChildUnit = _childUnits.isNotEmpty ? _childUnits.first : null;
-        _grandChildUnits
-          ..clear()
-          ..addAll(_selectedChildUnit?.units ?? <Unit>[]);
-        _selectedGrandChildUnit = _grandChildUnits.isNotEmpty
-            ? _grandChildUnits.first
-            : null;
-        _selectedUnit = null;
-        _childUnits.clear();
-        _selectedChildUnit = null;
-      }
-      _grandChildUnits.clear();
-      _selectedGrandChildUnit = null;
+      _subSubUnits.clear();
+      _selectedSubSubUnit = null;
+      _selectedUnit = null;
+      _subUnits.clear();
+      _selectedSubUnit = null;
     });
   }
 
@@ -138,29 +125,23 @@ class _ContactsPageState extends State<ContactsPage> {
                     onChanged: (Unit? value) {
                       setState(() {
                         _selectedUnit = value;
-                        _childUnits
+                        _subUnits
                           ..clear()
                           ..addAll(value?.units ?? <Unit>[]);
-                        _selectedChildUnit = _childUnits.isNotEmpty
-                            ? _childUnits.first
-                            : null;
-                        _grandChildUnits
-                          ..clear()
-                          ..addAll(_selectedChildUnit?.units ?? <Unit>[]);
-                        _selectedGrandChildUnit = _grandChildUnits.isNotEmpty
-                            ? _grandChildUnits.first
-                            : null;
+                        _selectedSubUnit = null;
+                        _subSubUnits.clear();
+                        _selectedSubSubUnit = null;
                       });
                     },
                   ),
                 ),
-                if (_childUnits.isNotEmpty)
+                if (_subUnits.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: CommonDropdown<Unit>(
                       label: 'Sub Unit',
-                      initialValue: _selectedChildUnit,
-                      items: _childUnits
+                      initialValue: _selectedSubUnit,
+                      items: _subUnits
                           .map(
                             (Unit unit) => DropdownMenuItem<Unit>(
                               value: unit,
@@ -170,24 +151,22 @@ class _ContactsPageState extends State<ContactsPage> {
                           .toList(),
                       onChanged: (Unit? value) {
                         setState(() {
-                          _selectedChildUnit = value;
-                          _grandChildUnits
+                          _selectedSubUnit = value;
+                          _subSubUnits
                             ..clear()
                             ..addAll(value?.units ?? <Unit>[]);
-                          _selectedGrandChildUnit = _grandChildUnits.isNotEmpty
-                              ? _grandChildUnits.first
-                              : null;
+                          _selectedSubSubUnit = null;
                         });
                       },
                     ),
                   ),
-                if (_grandChildUnits.isNotEmpty)
+                if (_subSubUnits.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: CommonDropdown<Unit>(
                       label: 'Sub Sub Unit',
-                      initialValue: _selectedGrandChildUnit,
-                      items: _grandChildUnits
+                      initialValue: _selectedSubSubUnit,
+                      items: _subSubUnits
                           .map(
                             (Unit unit) => DropdownMenuItem<Unit>(
                               value: unit,
@@ -197,7 +176,7 @@ class _ContactsPageState extends State<ContactsPage> {
                           .toList(),
                       onChanged: (Unit? value) {
                         setState(() {
-                          _selectedGrandChildUnit = value;
+                          _selectedSubSubUnit = value;
                         });
                       },
                     ),
