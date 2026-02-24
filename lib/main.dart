@@ -11,6 +11,7 @@ import 'features/police_contacts/data/datasources/contact_remote_data_source.dar
 import 'features/police_contacts/data/repositories/contact_repository_impl.dart';
 import 'features/police_contacts/domain/usecases/add_contact.dart';
 import 'features/police_contacts/domain/usecases/get_contacts.dart';
+import 'features/police_contacts/domain/usecases/get_units.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,9 +44,11 @@ Future<void> main() async {
   }
   final GetContacts getContacts = GetContacts(repository);
   final AddContact addContact = AddContact(repository);
+  final GetUnits getUnits = GetUnits(repository);
 
   ContactsDependencies.getContacts = getContacts;
   ContactsDependencies.addContact = addContact;
+  ContactsDependencies.getUnits = getUnits;
 
   runApp(const MyApp());
 }
