@@ -59,6 +59,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     const AppRouter router = AppRouter();
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Police Contacts',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
