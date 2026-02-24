@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:contact_directory/features/police_contacts/domain/entities/contact.dart';
+import 'package:contact_directory/features/police_contacts/domain/entities/units.dart';
 import 'package:contact_directory/features/police_contacts/domain/repositories/contact_repository.dart';
 import 'package:contact_directory/features/police_contacts/domain/usecases/add_contact.dart';
 import 'package:contact_directory/features/police_contacts/domain/usecases/get_contacts.dart';
@@ -37,6 +38,11 @@ class _InMemoryContactRepository implements ContactRepository {
   @override
   Future<List<Contact>> getContacts() async {
     return List<Contact>.unmodifiable(_contacts);
+  }
+
+  @override
+  Future<List<Unit>> getUnits() {
+    return Future<List<Unit>>.value(<Unit>[]);
   }
 }
 

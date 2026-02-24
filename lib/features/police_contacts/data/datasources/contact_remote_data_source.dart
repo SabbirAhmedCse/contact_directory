@@ -1,16 +1,13 @@
+import 'package:contact_directory/features/police_contacts/domain/entities/units.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../../domain/entities/contact.dart';
+import '../../domain/repositories/contact_repository.dart';
 
-abstract class ContactRemoteDataSource {
-  Future<List<Contact>> getContacts();
-  Future<void> addContact(Contact contact);
-}
-
-class FirebaseContactRemoteDataSource implements ContactRemoteDataSource {
+class ContactRemoteDataSource implements ContactRepository {
   final DatabaseReference ref;
 
-  FirebaseContactRemoteDataSource(this.ref);
+  ContactRemoteDataSource(this.ref);
 
   @override
   Future<List<Contact>> getContacts() async {
@@ -47,6 +44,12 @@ class FirebaseContactRemoteDataSource implements ContactRemoteDataSource {
       'name': contact.name,
       'phone': contact.phone,
     });
+  }
+
+  @override
+  Future<List<Unit>> getUnits() {
+    // TODO: implement getUnits
+    throw UnimplementedError();
   }
 }
 

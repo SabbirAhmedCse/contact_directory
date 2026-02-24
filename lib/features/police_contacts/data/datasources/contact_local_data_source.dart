@@ -1,10 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../domain/entities/contact.dart';
+import '../../domain/entities/units.dart';
 
 abstract class ContactLocalDataSource {
   Future<List<Contact>> getContacts();
   Future<void> addContact(Contact contact);
+  Future<List<Unit>> getUnits();
 }
 
 class HiveContactLocalDataSource implements ContactLocalDataSource {
@@ -70,5 +75,39 @@ class HiveContactLocalDataSource implements ContactLocalDataSource {
     for (final Contact contact in initialContacts) {
       await addContact(contact);
     }
+  }
+
+  @override
+  Future<List<Unit>> getUnits() async {
+    final String jsonString = await rootBundle.loadString(
+      'lib/features/police_contacts/data/json/units.json',
+    );
+
+    final dynamic data = jsonDecode(jsonString);
+    if (data is! List<dynamic>) {
+      return <Unit>[];
+    }
+
+    return data
+        .map<Unit>(
+          (dynamic raw) => _mapToUnit(Map<String, dynamic>.from(raw as Map)),
+        )
+        .toList();
+  }
+
+  Unit _mapToUnit(Map<String, dynamic> map) {
+    final List<dynamic> children =
+        (map['units'] as List<dynamic>? ?? <dynamic>[]);
+
+    return Unit(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      units: children
+          .map<Unit>(
+            (dynamic child) =>
+                _mapToUnit(Map<String, dynamic>.from(child as Map)),
+          )
+          .toList(),
+    );
   }
 }

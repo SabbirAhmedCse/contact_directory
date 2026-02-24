@@ -1,0 +1,959 @@
+[
+  {
+    "id": 1,
+    "name": "Police Headquarters (PHQ)",
+    "units": []
+  },
+  {
+    "id": 2,
+    "name": "Metropolitan police",
+    "units": [
+      {
+        "id": 1,
+        "name": "DMP",
+        "units": [
+          {
+            "id": 4,
+            "name": "DMP HeadQuater Division"
+          },
+          {
+            "id": 8,
+            "name": "Protection & Protocol Division"
+          },
+          {
+            "id": 10,
+            "name": "Prosecution Division"
+          },
+          {
+            "id": 12,
+            "name": "Ramna Division"
+          },
+          {
+            "id": 13,
+            "name": "Lalbag Division"
+          },
+          {
+            "id": 14,
+            "name": "Motijheel Division"
+          },
+          {
+            "id": 15,
+            "name": "Wari Division"
+          },
+          {
+            "id": 16,
+            "name": "Mirpur Division"
+          },
+          {
+            "id": 17,
+            "name": "Gulshan Division"
+          },
+          {
+            "id": 18,
+            "name": "Uttara Division"
+          },
+          {
+            "id": 20,
+            "name": "DB DMP"
+          },
+          {
+            "id": 22,
+            "name": "Traffic  Division"
+          },
+          {
+            "id": 243,
+            "name": "POM Division"
+          },
+          {
+            "id": 244,
+            "name": "Tejgaon Division"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "name": "CMP",
+        "units": []
+      },
+      {
+        "id": 3,
+        "name": "BMP",
+        "units": []
+      },
+      {
+        "id": 4,
+        "name": "KMP",
+        "units": []
+      },
+      {
+        "id": 5,
+        "name": "RMP",
+        "units": []
+      },
+      {
+        "id": 6,
+        "name": "SMP",
+        "units": []
+      },
+      {
+        "id": 7,
+        "name": "RPMP",
+        "units": []
+      },
+      {
+        "id": 8,
+        "name": "GMP",
+        "units": []
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Range Police",
+    "units": [
+      {
+        "id": 37,
+        "name": "Dhaka Range",
+        "units": [
+          {
+            "id": 38,
+            "name": "Dhaka District"
+          },
+          {
+            "id": 40,
+            "name": "Dhaka, RRF"
+          },
+          {
+            "id": 41,
+            "name": "Dhaka Range Office"
+          },
+          {
+            "id": 42,
+            "name": "Gazipur District"
+          },
+          {
+            "id": 43,
+            "name": "Narayangonj District"
+          },
+          {
+            "id": 44,
+            "name": "Manikgonj District"
+          },
+          {
+            "id": 45,
+            "name": "Narsingdhi District"
+          },
+          {
+            "id": 46,
+            "name": "Kishorgonj District"
+          },
+          {
+            "id": 47,
+            "name": "Tangaile District"
+          },
+          {
+            "id": 48,
+            "name": "Gopalgonj District"
+          },
+          {
+            "id": 49,
+            "name": "Madaripur District"
+          },
+          {
+            "id": 50,
+            "name": "Rajbari District"
+          },
+          {
+            "id": 51,
+            "name": "Shariatpur District"
+          },
+          {
+            "id": 52,
+            "name": "Faridpur District"
+          },
+          {
+            "id": 253,
+            "name": "Munshigonj District"
+          }
+        ]
+      },
+      {
+        "id": 59,
+        "name": "Chittagong Range",
+        "units": [
+          {
+            "id": 60,
+            "name": "Chittagong Range  Office"
+          },
+          {
+            "id": 61,
+            "name": "RRF, Chittagong"
+          },
+          {
+            "id": 62,
+            "name": "Chittagong District"
+          },
+          {
+            "id": 63,
+            "name": "Rangamati District"
+          },
+          {
+            "id": 64,
+            "name": "Bandorban District"
+          },
+          {
+            "id": 65,
+            "name": "Khagrachori District"
+          },
+          {
+            "id": 66,
+            "name": "Comilla District"
+          },
+          {
+            "id": 67,
+            "name": "Brahmanbaria District"
+          },
+          {
+            "id": 68,
+            "name": "Chandpur District"
+          },
+          {
+            "id": 69,
+            "name": "Noakhali District"
+          },
+          {
+            "id": 70,
+            "name": "Lakshmipur District"
+          },
+          {
+            "id": 71,
+            "name": "Coxsbazar District"
+          },
+          {
+            "id": 72,
+            "name": "Feni District"
+          }
+        ]
+      },
+      {
+        "id": 73,
+        "name": "Sylhet Range",
+        "units": [
+          {
+            "id": 74,
+            "name": "Sylhet Range Office"
+          },
+          {
+            "id": 75,
+            "name": "RRF, Sylhet"
+          },
+          {
+            "id": 76,
+            "name": "Sylhet District"
+          },
+          {
+            "id": 77,
+            "name": "Habigonj District"
+          },
+          {
+            "id": 78,
+            "name": "Sunamgonj District"
+          },
+          {
+            "id": 79,
+            "name": "Moulvibazar District"
+          }
+        ]
+      },
+      {
+        "id": 80,
+        "name": "Rajshahi Range",
+        "units": [
+          {
+            "id": 81,
+            "name": "Rajshahi Range Office"
+          },
+          {
+            "id": 82,
+            "name": "RRF, Rajshahi"
+          },
+          {
+            "id": 83,
+            "name": "Rajshahi District"
+          },
+          {
+            "id": 84,
+            "name": "Bogra District"
+          },
+          {
+            "id": 85,
+            "name": "Joypurhat District"
+          },
+          {
+            "id": 86,
+            "name": "Natore District"
+          },
+          {
+            "id": 87,
+            "name": "Chapainawabganj District"
+          },
+          {
+            "id": 88,
+            "name": "Naogaon District"
+          },
+          {
+            "id": 89,
+            "name": "Sirajgonj District"
+          },
+          {
+            "id": 90,
+            "name": "Pabna District"
+          }
+        ]
+      },
+      {
+        "id": 91,
+        "name": "Khulna Range",
+        "units": [
+          {
+            "id": 92,
+            "name": "Khuna Range Office"
+          },
+          {
+            "id": 93,
+            "name": "RRF, Khulna"
+          },
+          {
+            "id": 94,
+            "name": "Khulna District"
+          },
+          {
+            "id": 95,
+            "name": "Kustia District"
+          },
+          {
+            "id": 96,
+            "name": "Satkhira District"
+          },
+          {
+            "id": 97,
+            "name": "Jessore District"
+          },
+          {
+            "id": 98,
+            "name": "Magura District"
+          },
+          {
+            "id": 99,
+            "name": "Jhenaidah District"
+          },
+          {
+            "id": 100,
+            "name": "Narail Dist"
+          },
+          {
+            "id": 101,
+            "name": "Chuadanga District"
+          },
+          {
+            "id": 102,
+            "name": "Meherpur District"
+          },
+          {
+            "id": 103,
+            "name": "Bagherhat District"
+          }
+        ]
+      },
+      {
+        "id": 104,
+        "name": "Barisal Range",
+        "units": [
+          {
+            "id": 105,
+            "name": "Barisal Range  Office"
+          },
+          {
+            "id": 106,
+            "name": "RRF, Barisal"
+          },
+          {
+            "id": 107,
+            "name": "Barisal District"
+          },
+          {
+            "id": 108,
+            "name": "Jhalokati District"
+          },
+          {
+            "id": 109,
+            "name": "Bhola District"
+          },
+          {
+            "id": 110,
+            "name": "Patuakhali District"
+          },
+          {
+            "id": 111,
+            "name": "Pirojpur District"
+          },
+          {
+            "id": 112,
+            "name": "Barguna District"
+          },
+          {
+            "id": 231,
+            "name": "Inservice Training Center, Barisal."
+          },
+          {
+            "id": 232,
+            "name": "Inservice Training Center, Pirojpur."
+          }
+        ]
+      },
+      {
+        "id": 113,
+        "name": "Rangpur Range",
+        "units": [
+          {
+            "id": 114,
+            "name": "Rangpur Range  Office"
+          },
+          {
+            "id": 115,
+            "name": "RRF, Rangpur"
+          },
+          {
+            "id": 116,
+            "name": "Rangpur District"
+          },
+          {
+            "id": 117,
+            "name": "Gaibandha District"
+          },
+          {
+            "id": 118,
+            "name": "Dinajpur District"
+          },
+          {
+            "id": 119,
+            "name": "Panchagarh District"
+          },
+          {
+            "id": 120,
+            "name": "Nilphamary District"
+          },
+          {
+            "id": 121,
+            "name": "Takurgaon District"
+          },
+          {
+            "id": 122,
+            "name": "Kurigram District"
+          },
+          {
+            "id": 123,
+            "name": "Lalmonirhat District"
+          }
+        ]
+      },
+      {
+        "id": 124,
+        "name": "Mymensingh Range",
+        "units": [
+          {
+            "id": 125,
+            "name": "Mymensingh Range Office"
+          },
+          {
+            "id": 126,
+            "name": "Mymensingh District"
+          },
+          {
+            "id": 127,
+            "name": "Netrokona District"
+          },
+          {
+            "id": 128,
+            "name": "Sherpur District"
+          },
+          {
+            "id": 129,
+            "name": "Jamalpur District"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Armed Police Battalion",
+    "units": [
+      {
+        "id": 131,
+        "name": "APBn HQ",
+        "units": [
+          {
+            "id": 132,
+            "name": "APBn HQ"
+          },
+          {
+            "id": 134,
+            "name": "APBn 1"
+          },
+          {
+            "id": 135,
+            "name": "APBn 2"
+          },
+          {
+            "id": 136,
+            "name": "APBn 3"
+          },
+          {
+            "id": 137,
+            "name": "APBn 4"
+          },
+          {
+            "id": 138,
+            "name": "APBn 5"
+          },
+          {
+            "id": 139,
+            "name": "APBn 6"
+          },
+          {
+            "id": 140,
+            "name": "APBn 7"
+          },
+          {
+            "id": 141,
+            "name": "APBn 8"
+          },
+          {
+            "id": 142,
+            "name": "APBn 9"
+          },
+          {
+            "id": 143,
+            "name": "APBn 10"
+          },
+          {
+            "id": 144,
+            "name": "APBn 11"
+          },
+          {
+            "id": 227,
+            "name": "APBn 12"
+          },
+          {
+            "id": 238,
+            "name": "APBn 13"
+          },
+          {
+            "id": 239,
+            "name": "APBn 14"
+          },
+          {
+            "id": 240,
+            "name": "APBn 16"
+          },
+          {
+            "id": 254,
+            "name": "APBn 18"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Police Training Institutes",
+    "units": [
+      {
+        "id": 146,
+        "name": "Bangladesh Police Academy"
+      },
+      {
+        "id": 147,
+        "name": "Police Staff College"
+      },
+      {
+        "id": 148,
+        "name": "PTC- Rangpur"
+      },
+      {
+        "id": 149,
+        "name": "PTC- Tangail"
+      },
+      {
+        "id": 150,
+        "name": "PTC- Noakhali"
+      },
+      {
+        "id": 151,
+        "name": "PSTS- Betbunia, Rangamati"
+      },
+      {
+        "id": 152,
+        "name": "Detective Training School"
+      },
+      {
+        "id": 153,
+        "name": "Traffic & Driving Training School"
+      },
+      {
+        "id": 154,
+        "name": "PTC- Khulna"
+      },
+      {
+        "id": 252,
+        "name": "Specialized Training Center, Khagrachari. APBn"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Special Branch(SB)",
+    "units": []
+  },
+  {
+    "id": 7,
+    "name": "Criminal Investigation Department (CID)",
+    "units": []
+  },
+  {
+    "id": 8,
+    "name": "Police Telecom",
+    "units": []
+  },
+  {
+    "id": 9,
+    "name": "Police Bureau of Investigation",
+    "units": [
+      {
+        "id": 159,
+        "name": "PBI HQ"
+      },
+      {
+        "id": 160,
+        "name": "PBI East",
+        "units": [
+          {
+            "id": 161,
+            "name": "Dhaka Division"
+          },
+          {
+            "id": 163,
+            "name": "Mymensingh Division"
+          },
+          {
+            "id": 164,
+            "name": "Sylhet  Division"
+          },
+          {
+            "id": 165,
+            "name": "Chittagong Division"
+          }
+        ]
+      },
+      {
+        "id": 166,
+        "name": "PBI West",
+        "units": [
+          {
+            "id": 168,
+            "name": "Rajshahi  Division"
+          },
+          {
+            "id": 170,
+            "name": "Rangpur Division"
+          },
+          {
+            "id": 171,
+            "name": "Barisal Division"
+          },
+          {
+            "id": 172,
+            "name": "Khulna Division"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "name": "Central Police Hospital (CPH)",
+    "units": []
+  },
+  {
+    "id": 11,
+    "name": "Highway Police Range",
+    "units": [
+      {
+        "id": 177,
+        "name": "Highway Police HQ"
+      },
+      {
+        "id": 178,
+        "name": "Highway Police Bogra"
+      },
+      {
+        "id": 179,
+        "name": "Highway Police Comilla"
+      },
+      {
+        "id": 180,
+        "name": "Highway Police Gazipur"
+      },
+      {
+        "id": 181,
+        "name": "Highway Police Madarypur"
+      },
+      {
+        "id": 236,
+        "name": "Highway Police Sylhet"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "name": "Railway Police Range",
+    "units": [
+      {
+        "id": 183,
+        "name": "Chittagong Railway Police"
+      },
+      {
+        "id": 184,
+        "name": "Sayedpur Railway Police"
+      },
+      {
+        "id": 246,
+        "name": "Railway Police HQ"
+      },
+      {
+        "id": 247,
+        "name": "Dhaka Railway Police."
+      },
+      {
+        "id": 248,
+        "name": "Sylhet Railway Police."
+      },
+      {
+        "id": 249,
+        "name": "Khulna Railway Police."
+      },
+      {
+        "id": 250,
+        "name": "Pakshi Railway Police."
+      }
+    ]
+  },
+  {
+    "id": 13,
+    "name": "Industrial Police Range",
+    "units": [
+      {
+        "id": 186,
+        "name": "Industrial Police Headquarter"
+      },
+      {
+        "id": 187,
+        "name": "Industrial Police-1, Ashulia, Dhaka"
+      },
+      {
+        "id": 188,
+        "name": "Industrial Police-2, Gazipur"
+      },
+      {
+        "id": 189,
+        "name": "Industrial Police-3, Chittagong"
+      },
+      {
+        "id": 190,
+        "name": "Industrial Police-4, Narayangonj"
+      },
+      {
+        "id": 241,
+        "name": "Industrial Police-5, Mymensingh"
+      },
+      {
+        "id": 242,
+        "name": "Industrial Police-6, Khulna"
+      }
+    ]
+  },
+  {
+    "id": 14,
+    "name": "Rapid Action Battalion",
+    "units": [
+      {
+        "id": 192,
+        "name": "DG Office",
+        "units": []
+      },
+      {
+        "id": 193,
+        "name": "Admin Wing",
+        "units": []
+      },
+      {
+        "id": 194,
+        "name": "Air Wing",
+        "units": []
+      },
+      {
+        "id": 195,
+        "name": "Investigation Wing",
+        "units": []
+      },
+      {
+        "id": 196,
+        "name": "Communication & MIS WING",
+        "units": []
+      },
+      {
+        "id": 197,
+        "name": "Intelligence Wing",
+        "units": []
+      },
+      {
+        "id": 198,
+        "name": "Legal & Media Wing",
+        "units": []
+      },
+      {
+        "id": 199,
+        "name": "Training Wing",
+        "units": []
+      },
+      {
+        "id": 200,
+        "name": "Battlion: RAB-1",
+        "units": []
+      },
+      {
+        "id": 201,
+        "name": "Battlion: RAB-2",
+        "units": []
+      },
+      {
+        "id": 202,
+        "name": "Battlion: RAB-3",
+        "units": []
+      },
+      {
+        "id": 203,
+        "name": "Battlion: RAB-4",
+        "units": []
+      },
+      {
+        "id": 204,
+        "name": "Battlion: RAB-5",
+        "units": []
+      },
+      {
+        "id": 205,
+        "name": "Battlion: RAB-6",
+        "units": []
+      },
+      {
+        "id": 206,
+        "name": "Battlion: RAB-7",
+        "units": []
+      },
+      {
+        "id": 207,
+        "name": "Battlion: RAB-8",
+        "units": []
+      },
+      {
+        "id": 208,
+        "name": "Battlion: RAB-9",
+        "units": []
+      },
+      {
+        "id": 209,
+        "name": "Battlion: RAB-10",
+        "units": []
+      },
+      {
+        "id": 210,
+        "name": "Battlion: RAB-11",
+        "units": []
+      },
+      {
+        "id": 211,
+        "name": "Battlion: RAB-12",
+        "units": []
+      },
+      {
+        "id": 212,
+        "name": "Battlion: RAB-13",
+        "units": []
+      },
+      {
+        "id": 213,
+        "name": "Battlion: RAB-14",
+        "units": []
+      },
+      {
+        "id": 251,
+        "name": "Battlion: RAB-15",
+        "units": []
+      }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Tourist police",
+    "units": []
+  },
+  {
+    "id": 16,
+    "name": "River Police Range",
+    "units": [
+      {
+        "id": 219,
+        "name": "River Police Region"
+      },
+      {
+        "id": 220,
+        "name": "River Police Headquarter"
+      }
+    ]
+  },
+  {
+    "id": 17,
+    "name": "Special Security and Protection Battalion(SPBn)",
+    "units": [
+      {
+        "id": 223,
+        "name": "SPBn-1"
+      },
+      {
+        "id": 224,
+        "name": "SPBn-2"
+      },
+      {
+        "id": 226,
+        "name": "SPBn HQ"
+      }
+    ]
+  },
+  {
+    "id": 18,
+    "name": "Anti Terrorism Unit",
+    "units": [
+      {
+        "id": 229,
+        "name": "Anti Terrorism Unit"
+      }
+    ]
+  },
+  {
+    "id": 19,
+    "name": "Bangladesh Police Museum",
+    "units": []
+  }
+]

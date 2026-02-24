@@ -14,7 +14,14 @@ import 'features/police_contacts/domain/usecases/get_contacts.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  bool firebaseAvailable = false;
+  try {
+    await Firebase.initializeApp();
+    firebaseAvailable = true;
+  } catch (_) {
+    firebaseAvailable = false;
+  }
+
   await Hive.initFlutter();
 
   final Box<Map> contactsBox = await Hive.openBox<Map>('contactsBox');
@@ -22,13 +29,18 @@ Future<void> main() async {
   final ContactLocalDataSource localDataSource =
       HiveContactLocalDataSource(contactsBox);
 
-  final DatabaseReference firebaseRef =
-      FirebaseDatabase.instance.ref('police_contacts');
-
-  final ContactRepositoryImpl repository = ContactRepositoryImpl(
-    localDataSource,
-    remoteDataSource: FirebaseContactRemoteDataSource(firebaseRef),
-  );
+  late final ContactRepositoryImpl repository;
+  if (firebaseAvailable) {
+    final DatabaseReference firebaseRef = FirebaseDatabase.instance.ref(
+      'police_contacts',
+    );
+    repository = ContactRepositoryImpl(
+      localDataSource,
+      remoteDataSource: ContactRemoteDataSource(firebaseRef),
+    );
+  } else {
+    repository = ContactRepositoryImpl(localDataSource);
+  }
   final GetContacts getContacts = GetContacts(repository);
   final AddContact addContact = AddContact(repository);
 
