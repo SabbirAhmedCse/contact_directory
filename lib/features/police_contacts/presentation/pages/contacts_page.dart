@@ -5,20 +5,10 @@ import 'package:gap/gap.dart';
 
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/units.dart';
-import '../../domain/usecases/add_contact.dart';
-import '../../domain/usecases/get_contacts.dart';
-import '../../domain/usecases/get_units.dart';
+import '../../domain/usecases/police_contacts_usecase.dart';
 import '../../../core/presentation/widgets/common_text_field.dart';
 import '../../../core/presentation/widgets/common_dropdown.dart';
-import '../bloc/contacts_bloc.dart';
-import '../bloc/contacts_event.dart';
-import '../bloc/contacts_state.dart';
-
-class ContactsDependencies {
-  static late GetContacts getContacts;
-  static late AddContact addContact;
-  static late GetUnits getUnits;
-}
+import '../bloc/police_contacts_bloc.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
@@ -40,11 +30,14 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   void initState() {
     super.initState();
-    _loadUnits();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUnits();
+    });
   }
 
   Future<void> _loadUnits() async {
-    final List<Unit> units = await ContactsDependencies.getUnits();
+    final useCase = context.read<PoliceContactsUseCase>();
+    final List<Unit> units = await useCase.getUnits();
     if (!mounted) {
       return;
     }
@@ -69,18 +62,16 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ContactsBloc>(
+    return BlocProvider<PoliceContactsBloc>(
       create: (BuildContext context) {
-        return ContactsBloc(
-          getContacts: ContactsDependencies.getContacts,
-          addContact: ContactsDependencies.addContact,
+        return PoliceContactsBloc(context.read<PoliceContactsUseCase>(),
         )..add(const LoadContacts());
       },
       child: Scaffold(
         appBar: AppBar(title: const Text('All Police Contacts')),
-        body: BlocBuilder<ContactsBloc, ContactsState>(
-          builder: (BuildContext context, ContactsState state) {
-            if (state.status == ContactsStatus.loading) {
+        body: BlocBuilder<PoliceContactsBloc, PoliceContactsState>(
+          builder: (BuildContext context, PoliceContactsState state) {
+            if (state.status == PoliceContactsStatus.loading) {
               return const Center(child: CircularProgressIndicator());
             }
 
@@ -94,7 +85,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     controller: _nameController,
                     label: 'Search Contact',
                     onChanged: (String value) {
-                      // context.read<ContactsBloc>().add(
+                      // context.read<PoliceContactsBloc>().add(
                       //       SearchContactsEvent(query: value),
                       //     );
                     },

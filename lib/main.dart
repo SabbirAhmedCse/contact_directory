@@ -1,21 +1,49 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:path_provider/path_provider.dart';
 
+import 'features/core/data/cache/hive_db_services.dart';
+import 'features/core/domain/di/service_locator.dart';
 import 'features/core/presentation/routes/app_router.dart';
 import 'features/core/presentation/routes/app_routes.dart';
-import 'features/police_contacts/presentation/pages/contacts_page.dart';
-import 'features/police_contacts/data/datasources/contact_local_data_source.dart';
-import 'features/police_contacts/data/datasources/contact_remote_data_source.dart';
-import 'features/police_contacts/data/repositories/contact_repository_impl.dart';
-import 'features/police_contacts/domain/usecases/add_contact.dart';
-import 'features/police_contacts/domain/usecases/get_contacts.dart';
-import 'features/police_contacts/domain/usecases/get_units.dart';
+import 'features/police_contacts/domain/usecases/police_contacts_usecase.dart';
+import 'features/police_contacts/presentation/bloc/police_contacts_bloc.dart';
+
+RandomAccessFile? _lockFile;
+
+Future<bool> ensureSingleInstance() async {
+  final dir = Directory(
+    '${Platform.environment['APPDATA']}\\contact_directory_app',
+  );
+
+  if (!dir.existsSync()) {
+    dir.createSync(recursive: true);
+  }
+
+  final file = File('${dir.path}\\app.lock');
+
+  try {
+    _lockFile = await file.open(mode: FileMode.write);
+    await _lockFile!.lock(FileLock.exclusive);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!await ensureSingleInstance()) {
+    exit(0);
+  }
+  final dir = await getApplicationSupportDirectory();
+  Hive.init(dir.path);
+  await HiveDBServices.instance.init();
   bool firebaseAvailable = false;
   try {
     await Firebase.initializeApp();
@@ -23,33 +51,9 @@ Future<void> main() async {
   } catch (_) {
     firebaseAvailable = false;
   }
-
   await Hive.initFlutter();
 
-  final Box<Map> contactsBox = await Hive.openBox<Map>('contactsBox');
-
-  final ContactLocalDataSource localDataSource =
-      HiveContactLocalDataSource(contactsBox);
-
-  late final ContactRepositoryImpl repository;
-  if (firebaseAvailable) {
-    final DatabaseReference firebaseRef = FirebaseDatabase.instance.ref(
-      'police_contacts',
-    );
-    repository = ContactRepositoryImpl(
-      localDataSource,
-      remoteDataSource: ContactRemoteDataSource(firebaseRef),
-    );
-  } else {
-    repository = ContactRepositoryImpl(localDataSource);
-  }
-  final GetContacts getContacts = GetContacts(repository);
-  final AddContact addContact = AddContact(repository);
-  final GetUnits getUnits = GetUnits(repository);
-
-  ContactsDependencies.getContacts = getContacts;
-  ContactsDependencies.addContact = addContact;
-  ContactsDependencies.getUnits = getUnits;
+ 
 
   runApp(const MyApp());
 }
@@ -62,21 +66,36 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const AppRouter router = AppRouter();
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (_, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Police Contacts',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(
+          create: (context) => serviceLocator.get<PoliceContactsUseCase>(),
+        )
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) =>
+                PoliceContactsBloc(RepositoryProvider.of<PoliceContactsUseCase>(context)),
           ),
-          initialRoute: AppRoutes.home,
-          onGenerateRoute: router.generateRoute,
-        );
-      },
+        ],
+        child: ScreenUtilInit(
+          designSize: const Size(360, 690),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (_, child) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Police Contacts',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
+              ),
+              initialRoute: AppRoutes.home,
+              onGenerateRoute: router.generateRoute,
+            );
+          },
+        ),
+      ),
     );
   }
 }

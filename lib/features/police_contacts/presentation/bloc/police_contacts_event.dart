@@ -1,17 +1,17 @@
-import 'package:equatable/equatable.dart';
+part of 'police_contacts_bloc.dart';
 
-abstract class ContactsEvent extends Equatable {
-  const ContactsEvent();
+abstract class PoliceContactsEvent extends Equatable {
+  const PoliceContactsEvent();
 
   @override
   List<Object?> get props => <Object?>[];
 }
 
-class LoadContacts extends ContactsEvent {
+class LoadContacts extends PoliceContactsEvent {
   const LoadContacts();
 }
 
-class AddContactEvent extends ContactsEvent {
+class AddContactEvent extends PoliceContactsEvent {
   final String name;
   final String phone;
 

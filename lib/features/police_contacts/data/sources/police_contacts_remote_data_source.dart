@@ -1,13 +1,13 @@
-import 'package:contact_directory/features/police_contacts/domain/entities/units.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../../domain/entities/contact.dart';
-import '../../domain/repositories/contact_repository.dart';
+import '../../domain/entities/units.dart';
+import '../../domain/repositories/police_contacts_repository.dart';
 
-class ContactRemoteDataSource implements ContactRepository {
-  final DatabaseReference ref;
+class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
+  final DatabaseReference ref = FirebaseDatabase.instance.ref('police_contacts');
 
-  ContactRemoteDataSource(this.ref);
+  PoliceContactsRemoteDataSource();
 
   @override
   Future<List<Contact>> getContacts() async {

@@ -10,13 +10,12 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:contact_directory/features/police_contacts/domain/entities/contact.dart';
 import 'package:contact_directory/features/police_contacts/domain/entities/units.dart';
-import 'package:contact_directory/features/police_contacts/domain/repositories/contact_repository.dart';
-import 'package:contact_directory/features/police_contacts/domain/usecases/add_contact.dart';
-import 'package:contact_directory/features/police_contacts/domain/usecases/get_contacts.dart';
-import 'package:contact_directory/features/police_contacts/presentation/pages/contacts_page.dart';
+import 'package:contact_directory/features/police_contacts/domain/repositories/police_contacts_repository.dart';
+import 'package:contact_directory/features/police_contacts/domain/usecases/police_contacts_usecase.dart';
 import 'package:contact_directory/main.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class _InMemoryContactRepository implements ContactRepository {
+class _InMemoryContactRepository implements PoliceContactsRepository {
   final List<Contact> _contacts = <Contact>[
     const Contact(
       id: '1',
@@ -50,15 +49,17 @@ void main() {
   testWidgets(
     'Police contacts page shows initial data and allows adding a contact',
     (WidgetTester tester) async {
-      final _InMemoryContactRepository repository =
-          _InMemoryContactRepository();
-      final GetContacts getContacts = GetContacts(repository);
-      final AddContact addContact = AddContact(repository);
+      final repository = _InMemoryContactRepository();
+      final useCase = PoliceContactsUseCase(repository);
 
-      ContactsDependencies.getContacts = getContacts;
-      ContactsDependencies.addContact = addContact;
-
-      await tester.pumpWidget(const MyApp());
+      await tester.pumpWidget(
+        MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider<PoliceContactsUseCase>.value(value: useCase),
+          ],
+          child: const MyApp(),
+        ),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Police Contacts'), findsOneWidget);
