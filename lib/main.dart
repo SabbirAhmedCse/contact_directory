@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:path_provider/path_provider.dart';
 
 import 'features/core/data/cache/hive_db_services.dart';
+import 'app/flavours/app_config.dart';
 import 'features/core/domain/di/service_locator.dart';
 import 'features/core/presentation/routes/app_router.dart';
 import 'features/core/presentation/routes/app_routes.dart';
@@ -17,9 +17,14 @@ import 'features/police_contacts/presentation/bloc/police_contacts_bloc.dart';
 RandomAccessFile? _lockFile;
 
 Future<bool> ensureSingleInstance() async {
-  final dir = Directory(
-    '${Platform.environment['APPDATA']}\\contact_directory_app',
-  );
+  if (!Platform.isWindows) {
+    return true;
+  }
+  final appData = Platform.environment['APPDATA'];
+  if (appData == null) {
+    return true;
+  }
+  final dir = Directory('$appData\\contact_directory_app');
 
   if (!dir.existsSync()) {
     dir.createSync(recursive: true);
@@ -38,22 +43,33 @@ Future<bool> ensureSingleInstance() async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Handle single instance on Windows
   if (!await ensureSingleInstance()) {
     exit(0);
   }
-  final dir = await getApplicationSupportDirectory();
-  Hive.init(dir.path);
-  await HiveDBServices.instance.init();
-  bool firebaseAvailable = false;
-  try {
-    await Firebase.initializeApp();
-    firebaseAvailable = true;
-  } catch (_) {
-    firebaseAvailable = false;
-  }
+
+  // Initialize Hive
   await Hive.initFlutter();
 
- 
+  // Initialize AppConfig and ServiceLocator
+  appConfig.loadData({
+    'API_BASE_URL': 'https://api.example.com',
+    'API_VERSION': 'v1',
+    'APP_DEBUG': 'true',
+    'DEFAULT_LOCALE': 'en',
+  });
+  ServiceLocator().init(appConfig: appConfig);
+
+  // Initialize DB
+  await HiveDBServices.instance.init();
+
+  // Optional: Firebase initialization
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase not initialized: $e');
+  }
 
   runApp(const MyApp());
 }

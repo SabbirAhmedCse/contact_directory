@@ -71,7 +71,6 @@ class ServiceLocator {
   // }
 
   void _registerProcedureRepositories() {
-    var procedureHttp = PoliceContactsRemoteDataSource();
     var procedureCache = PoliceContactsLocalDataSource();
     registerSingleton<PoliceContactsRepository>(procedureCache);
   }

@@ -3,8 +3,6 @@ import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:hive_flutter/hive_flutter.dart';
-
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/units.dart';
 import '../../domain/repositories/police_contacts_repository.dart';
