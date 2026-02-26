@@ -1,25 +1,29 @@
 import 'package:hive/hive.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+import '../../../core/domain/constant/constant.dart';
 
 part 'contact.g.dart';
 
-@HiveType(typeId: 2)
+@JsonSerializable()
+@HiveType(typeId: policeDirectoryTypeId)
 class Contact {
   @HiveField(0)
-  final String id;
+  final int id;
   @HiveField(1)
-  final String unit;
+  final String? unit;
   @HiveField(2)
-  final String subUnit;
+  final String? subUnit;
   @HiveField(3)
-  final String subSubUnit;
+  final String? subSubUnit;
   @HiveField(4)
-  final String designation;
+  final String? designation;
   @HiveField(5)
-  final String mobileNumber;
+  final String? mobileNumber;
   @HiveField(6)
-  final String email;
+  final String? email;
   @HiveField(7)
-  final String phone;
+  final String? phone;
   @HiveField(8)
   final bool isActive;
   @HiveField(9)
@@ -27,26 +31,31 @@ class Contact {
   @HiveField(10)
   final DateTime createdOn;
   @HiveField(11)
-  final String createdBy;
+  final String? createdBy;
   @HiveField(12)
   final DateTime updatedOn;
   @HiveField(13)
-  final String updatedBy;
+  final String? updatedBy;
 
   const Contact({
     required this.id,
-    required this.unit,
-    required this.subUnit,
-    required this.subSubUnit,
-    required this.designation,
-    required this.mobileNumber,
-    required this.email,
-    required this.phone,
+    this.unit,
+    this.subUnit,
+    this.subSubUnit,
+    this.designation, 
+    this.mobileNumber,
+    this.email,
+    this.phone,
     required this.isActive,
     required this.isDeleted,
     required this.createdOn,
-    required this.createdBy,
+    this.createdBy,
     required this.updatedOn,
-    required this.updatedBy,
+    this.updatedBy,
   });
+
+  factory Contact.fromJson(Map<String, dynamic> json) =>
+      _$ContactFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ContactToJson(this); 
 }

@@ -61,7 +61,7 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
 
           if (unit.isNotEmpty || designation.isNotEmpty) {
             final contact = Contact(
-              id: '$table-$i',
+              id: i,
               unit: unit,
               subUnit: subUnit,
               subSubUnit: subSubUnit,
@@ -90,7 +90,7 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
     final now = DateTime.now();
     final List<Contact> initialContacts = [
       Contact(
-        id: '1',
+        id: 1,
         unit: 'PHQ',
         subUnit: '',
         subSubUnit: '',

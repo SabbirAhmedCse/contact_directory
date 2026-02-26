@@ -187,8 +187,8 @@ class _ContactsPageState extends State<ContactsPage> {
                       itemBuilder: (BuildContext context, int index) {
                         final Contact contact = contacts[index];
                         return ListTile(
-                          title: Text(contact.designation),
-                          subtitle: Text(contact.mobileNumber.isNotEmpty ? contact.mobileNumber : contact.phone),
+                          title: Text(contact.designation??''),
+                          subtitle: Text(contact.mobileNumber?.isNotEmpty ?? false ? contact.mobileNumber ?? '' : contact.phone ?? ''),
                         );
                       },
                     ),

@@ -17,20 +17,20 @@ class ContactAdapter extends TypeAdapter<Contact> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Contact(
-      id: fields[0] as String,
-      unit: fields[1] as String,
-      subUnit: fields[2] as String,
-      subSubUnit: fields[3] as String,
-      designation: fields[4] as String,
-      mobileNumber: fields[5] as String,
-      email: fields[6] as String,
-      phone: fields[7] as String,
+      id: fields[0] as int,
+      unit: fields[1] as String?,
+      subUnit: fields[2] as String?,
+      subSubUnit: fields[3] as String?,
+      designation: fields[4] as String?,
+      mobileNumber: fields[5] as String?,
+      email: fields[6] as String?,
+      phone: fields[7] as String?,
       isActive: fields[8] as bool,
       isDeleted: fields[9] as bool,
       createdOn: fields[10] as DateTime,
-      createdBy: fields[11] as String,
+      createdBy: fields[11] as String?,
       updatedOn: fields[12] as DateTime,
-      updatedBy: fields[13] as String,
+      updatedBy: fields[13] as String?,
     );
   }
 
@@ -78,3 +78,41 @@ class ContactAdapter extends TypeAdapter<Contact> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Contact _$ContactFromJson(Map<String, dynamic> json) => Contact(
+      id: (json['id'] as num).toInt(),
+      unit: json['unit'] as String?,
+      subUnit: json['subUnit'] as String?,
+      subSubUnit: json['subSubUnit'] as String?,
+      designation: json['designation'] as String?,
+      mobileNumber: json['mobileNumber'] as String?,
+      email: json['email'] as String?,
+      phone: json['phone'] as String?,
+      isActive: json['isActive'] as bool,
+      isDeleted: json['isDeleted'] as bool,
+      createdOn: DateTime.parse(json['createdOn'] as String),
+      createdBy: json['createdBy'] as String?,
+      updatedOn: DateTime.parse(json['updatedOn'] as String),
+      updatedBy: json['updatedBy'] as String?,
+    );
+
+Map<String, dynamic> _$ContactToJson(Contact instance) => <String, dynamic>{
+      'id': instance.id,
+      'unit': instance.unit,
+      'subUnit': instance.subUnit,
+      'subSubUnit': instance.subSubUnit,
+      'designation': instance.designation,
+      'mobileNumber': instance.mobileNumber,
+      'email': instance.email,
+      'phone': instance.phone,
+      'isActive': instance.isActive,
+      'isDeleted': instance.isDeleted,
+      'createdOn': instance.createdOn.toIso8601String(),
+      'createdBy': instance.createdBy,
+      'updatedOn': instance.updatedOn.toIso8601String(),
+      'updatedBy': instance.updatedBy,
+    };

@@ -18,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class _InMemoryContactRepository implements PoliceContactsRepository {
   final List<Contact> _contacts = <Contact>[
     Contact(
-      id: '1',
+      id: 1,
       unit: 'Unit 1',
       subUnit: '',
       subSubUnit: '',
@@ -34,7 +34,7 @@ class _InMemoryContactRepository implements PoliceContactsRepository {
       updatedBy: 'test',
     ),
     Contact(
-      id: '2',
+      id: 2,
       unit: 'Unit 2',
       subUnit: '',
       subSubUnit: '',

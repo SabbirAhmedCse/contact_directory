@@ -38,7 +38,7 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
   ) async {
     final now = DateTime.now();
     final Contact contact = Contact(
-      id: now.millisecondsSinceEpoch.toString(),
+      id: now.millisecondsSinceEpoch,
       unit: '',
       subUnit: '',
       subSubUnit: '',

@@ -21,7 +21,7 @@ class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
           final data = Map<String, dynamic>.from(raw as Map);
           contacts.add(
             Contact(
-              id: data['id']?.toString() ?? '',
+              id: data['id']?.toInt() ?? 0,
               unit: data['unit']?.toString() ?? '',
               subUnit: data['subUnit']?.toString() ?? '',
               subSubUnit: data['subSubUnit']?.toString() ?? '',
@@ -46,7 +46,7 @@ class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
 
   @override
   Future<void> addContact(Contact contact) async {
-    await ref.child(contact.id).set(<String, dynamic>{
+    await ref.child(contact.id.toString()).set(<String, dynamic>{
       'id': contact.id,
       'unit': contact.unit,
       'subUnit': contact.subUnit,
