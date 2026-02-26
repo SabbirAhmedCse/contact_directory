@@ -17,15 +17,37 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class _InMemoryContactRepository implements PoliceContactsRepository {
   final List<Contact> _contacts = <Contact>[
-    const Contact(
+    Contact(
       id: '1',
-      name: 'Alice Johnson',
+      unit: 'Unit 1',
+      subUnit: '',
+      subSubUnit: '',
+      designation: 'Alice Johnson',
+      mobileNumber: '555-0100',
+      email: '',
       phone: '555-0100',
+      isActive: true,
+      isDeleted: false,
+      createdOn: DateTime.now(),
+      createdBy: 'test',
+      updatedOn: DateTime.now(),
+      updatedBy: 'test',
     ),
-    const Contact(
+    Contact(
       id: '2',
-      name: 'Bob Smith',
+      unit: 'Unit 2',
+      subUnit: '',
+      subSubUnit: '',
+      designation: 'Bob Smith',
+      mobileNumber: '555-0110',
+      email: '',
       phone: '555-0110',
+      isActive: true,
+      isDeleted: false,
+      createdOn: DateTime.now(),
+      createdBy: 'test',
+      updatedOn: DateTime.now(),
+      updatedBy: 'test',
     ),
   ];
 

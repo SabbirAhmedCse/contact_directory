@@ -18,18 +18,25 @@ class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
     if (value is Map<Object?, Object?>) {
       value.forEach((Object? key, Object? raw) {
         if (raw is Map<Object?, Object?>) {
-          final String? id = raw['id']?.toString();
-          final String? name = raw['name']?.toString();
-          final String? phone = raw['phone']?.toString();
-          if (id != null && name != null && phone != null) {
-            contacts.add(
-              Contact(
-                id: id,
-                name: name,
-                phone: phone,
-              ),
-            );
-          }
+          final data = Map<String, dynamic>.from(raw as Map);
+          contacts.add(
+            Contact(
+              id: data['id']?.toString() ?? '',
+              unit: data['unit']?.toString() ?? '',
+              subUnit: data['subUnit']?.toString() ?? '',
+              subSubUnit: data['subSubUnit']?.toString() ?? '',
+              designation: data['designation']?.toString() ?? '',
+              mobileNumber: data['mobileNumber']?.toString() ?? '',
+              email: data['email']?.toString() ?? '',
+              phone: data['phone']?.toString() ?? '',
+              isActive: data['isActive'] == true,
+              isDeleted: data['isDeleted'] == true,
+              createdOn: data['createdOn'] != null ? DateTime.parse(data['createdOn']) : DateTime.now(),
+              createdBy: data['createdBy']?.toString() ?? '',
+              updatedOn: data['updatedOn'] != null ? DateTime.parse(data['updatedOn']) : DateTime.now(),
+              updatedBy: data['updatedBy']?.toString() ?? '',
+            ),
+          );
         }
       });
     }
@@ -41,8 +48,19 @@ class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
   Future<void> addContact(Contact contact) async {
     await ref.child(contact.id).set(<String, dynamic>{
       'id': contact.id,
-      'name': contact.name,
+      'unit': contact.unit,
+      'subUnit': contact.subUnit,
+      'subSubUnit': contact.subSubUnit,
+      'designation': contact.designation,
+      'mobileNumber': contact.mobileNumber,
+      'email': contact.email,
       'phone': contact.phone,
+      'isActive': contact.isActive,
+      'isDeleted': contact.isDeleted,
+      'createdOn': contact.createdOn.toIso8601String(),
+      'createdBy': contact.createdBy,
+      'updatedOn': contact.updatedOn.toIso8601String(),
+      'updatedBy': contact.updatedBy,
     });
   }
 

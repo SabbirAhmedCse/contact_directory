@@ -6,52 +6,24 @@ import 'package:flutter/services.dart' show rootBundle;
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/units.dart';
 import '../../domain/repositories/police_contacts_repository.dart';
-
-
+import '../../../core/data/cache/hive_db_services.dart';
 
 class PoliceContactsLocalDataSource implements PoliceContactsRepository {
-
   PoliceContactsLocalDataSource();
 
   @override
   Future<List<Contact>> getContacts() async {
-    //if (box.isEmpty) {
+    final contacts = await HiveDBServices.instance.policeContacts.getAll();
+    if (contacts.isEmpty) {
       await _seedFromExcel();
-    //}
-
-    final List<Contact> contacts = <Contact>[];
-
-    // for (final dynamic value in box.values) {
-    //   if (value is Map) {
-    //     final String? id = value['id'] as String?;
-    //     final String? name = value['name'] as String?;
-    //     final String? phone = value['phone'] as String?;
-
-    //     if (id != null && name != null && phone != null) {
-    //       contacts.add(
-    //         Contact(
-    //           id: id,
-    //           name: name,
-    //           phone: phone,
-    //         ),
-    //       );
-    //     }
-    //   }
-    // }
-
+      return HiveDBServices.instance.policeContacts.getAll();
+    }
     return contacts;
   }
 
   @override
   Future<void> addContact(Contact contact) async {
-    // await box.put(
-    //   contact.id,
-    //   <String, String>{
-    //     'id': contact.id,
-    //     'name': contact.name,
-    //     'phone': contact.phone,
-    //   },
-    // );
+    await HiveDBServices.instance.policeContacts.save(contact);
   }
 
   Future<void> _seedFromExcel() async {
@@ -72,38 +44,70 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
         // Skip header row
         for (int i = 1; i < sheet.maxRows; i++) {
           final List<Data?> row = sheet.rows[i];
-          if (row.length < 3) continue;
+          if (row.length < 8) continue;
 
-          final String name = row[0]?.value?.toString() ?? '';
-          final String phone = row[1]?.value?.toString() ?? '';
-          final String id = row[2]?.value?.toString() ?? i.toString();
+          String cellValue(int index) {
+            if (index >= row.length) return '';
+            return row[index]?.value?.toString().trim() ?? '';
+          }
 
-          if (name.isNotEmpty && phone.isNotEmpty) {
-            await addContact(Contact(id: id, name: name, phone: phone));
+          final String unit = cellValue(0);
+          final String subUnit = cellValue(1);
+          final String subSubUnit = cellValue(2);
+          final String designation = cellValue(3);
+          final String phone = cellValue(4);
+          final String mobileNumber = cellValue(5);
+          final String email = cellValue(7);
+
+          if (unit.isNotEmpty || designation.isNotEmpty) {
+            final contact = Contact(
+              id: '$table-$i',
+              unit: unit,
+              subUnit: subUnit,
+              subSubUnit: subSubUnit,
+              designation: designation,
+              mobileNumber: mobileNumber,
+              email: email,
+              phone: phone,
+              isActive: true,
+              isDeleted: false,
+              createdOn: DateTime.now(),
+              createdBy: 'system',
+              updatedOn: DateTime.now(),
+              updatedBy: 'system',
+            );
+            await addContact(contact);
           }
         }
       }
     } catch (e) {
-      // Fallback to initial data if excel fails
+      // Fallback if excel fails
       await _seedInitialData();
     }
   }
 
   Future<void> _seedInitialData() async {
-    final List<Contact> initialContacts = <Contact>[
-      const Contact(
+    final now = DateTime.now();
+    final List<Contact> initialContacts = [
+      Contact(
         id: '1',
-        name: 'Alice Johnson',
+        unit: 'PHQ',
+        subUnit: '',
+        subSubUnit: '',
+        designation: 'IGP',
+        mobileNumber: '0123456789',
+        email: 'igp@police.gov.bd',
         phone: '555-0100',
-      ),
-      const Contact(
-        id: '2',
-        name: 'Bob Smith',
-        phone: '555-0110',
+        isActive: true,
+        isDeleted: false,
+        createdOn: now,
+        createdBy: 'system',
+        updatedOn: now,
+        updatedBy: 'system',
       ),
     ];
 
-    for (final Contact contact in initialContacts) {
+    for (final contact in initialContacts) {
       await addContact(contact);
     }
   }

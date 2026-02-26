@@ -1,4 +1,3 @@
-import 'package:contact_directory/features/police_contacts/data/sources/police_contacts_remote_data_source.dart';
 import 'package:get_it/get_it.dart';
 import '../../../../app/flavours/app_config.dart';
 import '../../../police_contacts/data/sources/police_contacts_local_data_source.dart';

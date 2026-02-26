@@ -36,10 +36,22 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     AddContactEvent event,
     Emitter<PoliceContactsState> emit,
   ) async {
+    final now = DateTime.now();
     final Contact contact = Contact(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: event.name,
-      phone: event.phone,
+      id: now.millisecondsSinceEpoch.toString(),
+      unit: '',
+      subUnit: '',
+      subSubUnit: '',
+      designation: event.name, // Mapping name to designation for now
+      mobileNumber: event.phone,
+      email: '',
+      phone: '',
+      isActive: true,
+      isDeleted: false,
+      createdOn: now,
+      createdBy: 'user',
+      updatedOn: now,
+      updatedBy: 'user',
     );
 
     try {
