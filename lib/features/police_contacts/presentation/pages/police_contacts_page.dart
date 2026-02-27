@@ -10,14 +10,14 @@ import '../../../core/presentation/widgets/common_text_field.dart';
 import '../../../core/presentation/widgets/common_dropdown.dart';
 import '../bloc/police_contacts_bloc.dart';
 
-class ContactsPage extends StatefulWidget {
-  const ContactsPage({super.key});
+class PoliceContactsPage extends StatefulWidget {
+  const PoliceContactsPage({super.key});
 
   @override
-  State<ContactsPage> createState() => _ContactsPageState();
+  State<PoliceContactsPage> createState() => _PoliceContactsPageState();
 }
 
-class _ContactsPageState extends State<ContactsPage> {
+class _PoliceContactsPageState extends State<PoliceContactsPage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final List<Unit> _units = <Unit>[];

@@ -1,6 +1,9 @@
+import 'package:contact_directory/resources/resource_export.dart';
+import 'package:contact_directory/services/navigation/navigation_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:contact_directory/features/core/presentation/routes/app_routes.dart';
+import '../../../../res/routes/route_paths.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -12,113 +15,47 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Police Directory'),
+        title: const Text('Contact Directory'),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: <Color>[
-              Colors.blue.shade900,
-              Colors.blue.shade700,
-              Colors.blue.shade400,
-            ],
-          ),
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  'Bangladesh Police',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Quick access to important police contacts',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.white70,
-                      ),
-                ),
-                const SizedBox(height: 24),
-                Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 360),
-                      child: Card(
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(16),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
                           onTap: () {
-                            Navigator.of(context)
-                                .pushNamed(AppRoutes.policeContacts);
+                            NavigationService.navigateTo( RoutePaths.policeContactsPage);
                           },
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Row(
-                              children: <Widget>[
-                                Container(
-                                  width: 56,
-                                  height: 56,
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade50,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    Icons.local_police,
-                                    size: 32,
-                                    color: Colors.blue.shade800,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const <Widget>[
-                                      Text(
-                                        'Police Contacts',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'View and manage Bangladesh Police contact list',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Colors.black54,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 18,
-                                  color: Colors.black45,
-                                ),
-                              ],
+                          child: Card(
+                            child: Container(
+                              width: 200.w,
+                              height: 200.h,
+                              child: Image.asset(
+                                context
+                                    .resources
+                                    .drawable
+                                    .bangladeshPoliceLogo,
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        
+                      ],
                     ),
                   ),
-                ),
-              ],
-            ),
+                  Expanded(child: Column(children: [],))
+                ],
+              ),
+            ],
           ),
         ),
       ),

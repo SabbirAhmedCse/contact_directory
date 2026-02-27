@@ -25,15 +25,16 @@ class ContactAdapter extends TypeAdapter<Contact> {
       mobileNumber: fields[5] as String?,
       email: fields[6] as String?,
       phone: fields[7] as String?,
-      isActive: fields[8] as bool,
-      isDeleted: fields[9] as bool,
-      createdOn: fields[10] as DateTime,
+      // Gracefully handle missing/older fields by providing sensible defaults
+      isActive: (fields[8] as bool?) ?? true,
+      isDeleted: (fields[9] as bool?) ?? false,
+      createdOn: (fields[10] as DateTime?) ?? DateTime.now(),
       createdBy: fields[11] as String?,
-      updatedOn: fields[12] as DateTime,
+      updatedOn: (fields[12] as DateTime?) ?? DateTime.now(),
       updatedBy: fields[13] as String?,
-      deletedOn: fields[14] as DateTime,
+      deletedOn: (fields[14] as DateTime?) ?? DateTime(0),
       deletedBy: fields[15] as String?,
-      isFavorite: fields[16] as bool,
+      isFavorite: (fields[16] as bool?) ?? false,
     );
   }
 

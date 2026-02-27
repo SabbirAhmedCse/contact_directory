@@ -48,6 +48,8 @@ dependencies:
   json_annotation: ^4.9.0
   path_provider: ^2.1.5
   get_it: ^9.0.5
+  google_fonts: ^6.1.0
+  logger: ^2.6.2
 
 dev_dependencies:
   flutter_test:
@@ -76,8 +78,11 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/svg/
+    - assets/images/
+    - assets/icon/
     - lib/features/police_contacts/data/json/units.json
-    - lib/features/police_contacts/data/json/police_contacts.xlsx
+    - lib/features/police_contacts/data/json/police_contacts.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

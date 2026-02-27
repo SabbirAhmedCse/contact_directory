@@ -13,99 +13,56 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
 
   @override
   Future<List<Contact>> getContacts() async {
-    final contacts = await HiveDBServices.instance.policeContacts.getAll();
-   
-      await _seedFromExcel();
-      return HiveDBServices.instance.policeContacts.getAll();
-    
-    //return contacts;
+    try {
+      final  box = HiveDBServices.instance.policeContacts;
+
+      final List<Contact> contacts = await box.getAll();
+
+      if (contacts.isNotEmpty) {
+        return contacts;
+      }
+
+      final String jsonString = await rootBundle.loadString(
+        'lib/features/police_contacts/data/json/police_contacts.json',
+      );
+
+      final List<Map<String, dynamic>> jsonList =
+          List<Map<String, dynamic>>.from(json.decode(jsonString));
+
+      final List<Contact> contactList = jsonList.map((e) {
+        return Contact(
+          id: e['id'],
+          unit: e['unit'] ?? '',
+          subUnit: e['subUnit'] ?? '',
+          subSubUnit: e['subSubUnit'] ?? '',
+          designation: e['designation'] ?? '',
+          mobileNumber: e['mobileNumber'] ?? '',
+          email: e['email'] ?? '',
+          phone: e['phone'] ?? '',
+          isActive: e['isActive'] ?? true,
+          isDeleted: e['isDeleted'] ?? false,
+          createdOn: DateTime.now(),
+          updatedOn: DateTime.now(),
+          deletedOn: DateTime.now(),
+          createdBy: null,
+          updatedBy: null,
+          deletedBy: null,
+          isFavorite: false,
+        );
+      }).toList();
+
+      await box.upsertEntities(entities:contactList);
+
+      return contactList;
+    } catch (e) {
+      throw Exception('Error loading contacts: $e');
+    }
   }
 
   @override
   Future<void> addContact(Contact contact) async {
     await HiveDBServices.instance.policeContacts.save(contact);
   }
-
-  Future<void> _seedFromExcel() async {
-    try {
-      final ByteData data = await rootBundle.load(
-        'lib/features/police_contacts/data/json/police_contacts.xlsx',
-      );
-
-      final bytes = data.buffer.asUint8List();
-      final excel = Excel.decodeBytes(bytes);
-
-      for (final table in excel.tables.keys) {
-        final sheet = excel.tables[table];
-        if (sheet == null || sheet.rows.isEmpty) continue;
-
-        /// 🔥 Step 1: Read header row
-        final headerRow = sheet.rows.first;
-
-        Map<String, int> columnIndex = {};
-
-        for (int i = 0; i < headerRow.length; i++) {
-          final headerValue = headerRow[i]?.value
-              ?.toString()
-              .trim()
-              .toLowerCase();
-
-          if (headerValue != null && headerValue.isNotEmpty) {
-            columnIndex[headerValue] = i;
-          }
-        }
-
-        /// 🔥 Step 2: Helper to get value by column name
-        String getValue(List<Data?> row, String columnName) {
-          final index = columnIndex[columnName.toLowerCase()];
-          if (index == null || index >= row.length) return '';
-          final cell = row[index];
-          if (cell == null || cell.value == null) return '';
-          return cell.value.toString().trim();
-        }
-
-        /// 🔥 Step 3: Loop data rows
-        for (int i = 1; i < sheet.rows.length; i++) {
-          final row = sheet.rows[i];
-          final id = getValue(row, 'id');
-          final unit = getValue(row, 'unit');
-          final subUnit = getValue(row, 'subUnit');
-          final subSubUnit = getValue(row, 'subSubUnit');
-          final designation = getValue(row, 'designation');
-          final mobileNumber = getValue(row, 'mobileNumber');
-          final email = getValue(row, 'email');
-          final phone = getValue(row, 'phone');
-
-          if (unit.isEmpty && designation.isEmpty) continue;
-
-          final contact = Contact(
-            id: int.parse(id),
-            unit: unit,
-            subUnit: subUnit,
-            subSubUnit: subSubUnit,
-            designation: designation,
-            mobileNumber: mobileNumber,
-            email: email,
-            phone: phone,
-            isActive: true,
-            isDeleted: false,
-            createdOn: DateTime.now(),
-            createdBy: 'system',
-            updatedOn: DateTime.now(),
-            updatedBy: 'system',
-            deletedOn: DateTime(0),
-            deletedBy: '',
-            isFavorite: false,
-          );
-
-          await addContact(contact);
-        }
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
 
   @override
   Future<List<Unit>> getUnits() async {

@@ -2,26 +2,29 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import '../../../police_contacts/presentation/pages/police_contacts_page.dart';
-import '../pages/home_screen.dart';
-import 'app_routes.dart';
-
+import '../../features/core/presentation/pages/home_screen.dart';
+import '../../features/core/presentation/pages/splash_screen.dart';
+import '../../features/police_contacts/presentation/pages/police_contacts_page.dart';
+import 'route_paths.dart';
 
 class AppRouter {
- static Route generateRoute(RouteSettings settings) {
+  static Route generateRoute(RouteSettings settings) {
     Widget widget;
 
     switch (settings.name) {
-      case AppRoutes.home:
+      case RoutePaths.splash:
+        widget = const SplashScreen();
+        break;
+      case RoutePaths.homeScreen:
         widget = const HomeScreen();
         break;
-      case AppRoutes.policeContacts:
+      case RoutePaths.policeContactsPage:
         widget = const PoliceContactsPage();
         break;
       default:
-        widget = Container();
-        break;
+        return MaterialPageRoute(builder: (context) => widget = Container());
     }
+
     if (Platform.isIOS) {
       return MaterialPageRoute(
         builder: (context) {
@@ -41,7 +44,7 @@ class AppRouter {
     return _createRoute(settings, widget);
   }
 
- static Route _createRoute(final RouteSettings settings, final widget) {
+  static Route _createRoute(final RouteSettings settings, final widget) {
     return PageRouteBuilder(
       settings: settings,
       pageBuilder: (context, animation, secondaryAnimation) => widget,
