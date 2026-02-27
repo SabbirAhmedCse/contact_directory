@@ -52,6 +52,9 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
       createdBy: 'user',
       updatedOn: now,
       updatedBy: 'user',
+      deletedOn: DateTime(0),
+      deletedBy: '',
+      isFavorite: false,
     );
 
     try {

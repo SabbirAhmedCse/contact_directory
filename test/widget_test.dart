@@ -32,6 +32,9 @@ class _InMemoryContactRepository implements PoliceContactsRepository {
       createdBy: 'test',
       updatedOn: DateTime.now(),
       updatedBy: 'test',
+      deletedOn: DateTime(0),
+      deletedBy: '',
+      isFavorite: false,
     ),
     Contact(
       id: 2,
@@ -48,6 +51,9 @@ class _InMemoryContactRepository implements PoliceContactsRepository {
       createdBy: 'test',
       updatedOn: DateTime.now(),
       updatedBy: 'test',
+      deletedOn: DateTime(0),
+      deletedBy: '',
+      isFavorite: false,
     ),
   ];
 

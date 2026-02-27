@@ -31,6 +31,9 @@ class ContactAdapter extends TypeAdapter<Contact> {
       createdBy: fields[11] as String?,
       updatedOn: fields[12] as DateTime,
       updatedBy: fields[13] as String?,
+      deletedOn: fields[14] as DateTime,
+      deletedBy: fields[15] as String?,
+      isFavorite: fields[16] as bool,
     );
   }
 
@@ -65,7 +68,13 @@ class ContactAdapter extends TypeAdapter<Contact> {
       ..writeByte(12)
       ..write(obj.updatedOn)
       ..writeByte(13)
-      ..write(obj.updatedBy);
+      ..write(obj.updatedBy)
+      ..writeByte(14)
+      ..write(obj.deletedOn)
+      ..writeByte(15)
+      ..write(obj.deletedBy)
+      ..writeByte(16)
+      ..write(obj.isFavorite);
   }
 
   @override
@@ -98,6 +107,9 @@ Contact _$ContactFromJson(Map<String, dynamic> json) => Contact(
       createdBy: json['createdBy'] as String?,
       updatedOn: DateTime.parse(json['updatedOn'] as String),
       updatedBy: json['updatedBy'] as String?,
+      deletedOn: DateTime.parse(json['deletedOn'] as String),
+      deletedBy: json['deletedBy'] as String?,
+      isFavorite: json['isFavorite'] as bool,
     );
 
 Map<String, dynamic> _$ContactToJson(Contact instance) => <String, dynamic>{
@@ -115,4 +127,7 @@ Map<String, dynamic> _$ContactToJson(Contact instance) => <String, dynamic>{
       'createdBy': instance.createdBy,
       'updatedOn': instance.updatedOn.toIso8601String(),
       'updatedBy': instance.updatedBy,
+      'deletedOn': instance.deletedOn.toIso8601String(),
+      'deletedBy': instance.deletedBy,
+      'isFavorite': instance.isFavorite,
     };

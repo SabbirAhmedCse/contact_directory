@@ -36,6 +36,12 @@ class Contact {
   final DateTime updatedOn;
   @HiveField(13)
   final String? updatedBy;
+  @HiveField(14)
+  final DateTime deletedOn;
+  @HiveField(15)
+  final String? deletedBy;
+  @HiveField(16)
+  final bool isFavorite;
 
   const Contact({
     required this.id,
@@ -52,6 +58,9 @@ class Contact {
     this.createdBy,
     required this.updatedOn,
     this.updatedBy,
+    required this.deletedOn,
+    this.deletedBy,
+    this.isFavorite = false,
   });
 
   factory Contact.fromJson(Map<String, dynamic> json) =>

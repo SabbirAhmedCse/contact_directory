@@ -35,6 +35,9 @@ class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
               createdBy: data['createdBy']?.toString() ?? '',
               updatedOn: data['updatedOn'] != null ? DateTime.parse(data['updatedOn']) : DateTime.now(),
               updatedBy: data['updatedBy']?.toString() ?? '',
+              deletedOn: data['deletedOn'] != null ? DateTime.parse(data['deletedOn']) : DateTime(0),
+              deletedBy: data['deletedBy']?.toString() ?? '',
+              isFavorite: data['isFavorite'] == true,
             ),
           );
         }

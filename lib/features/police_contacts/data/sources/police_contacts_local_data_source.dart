@@ -14,11 +14,11 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
   @override
   Future<List<Contact>> getContacts() async {
     final contacts = await HiveDBServices.instance.policeContacts.getAll();
-    if (contacts.isEmpty) {
+   
       await _seedFromExcel();
       return HiveDBServices.instance.policeContacts.getAll();
-    }
-    return contacts;
+    
+    //return contacts;
   }
 
   @override
@@ -31,86 +31,81 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
       final ByteData data = await rootBundle.load(
         'lib/features/police_contacts/data/json/police_contacts.xlsx',
       );
-      final List<int> bytes = data.buffer.asUint8List(
-        data.offsetInBytes,
-        data.lengthInBytes,
-      );
-      final Excel excel = Excel.decodeBytes(bytes);
 
-      for (final String table in excel.tables.keys) {
-        final Sheet? sheet = excel.tables[table];
-        if (sheet == null) continue;
+      final bytes = data.buffer.asUint8List();
+      final excel = Excel.decodeBytes(bytes);
 
-        // Skip header row
-        for (int i = 1; i < sheet.maxRows; i++) {
-          final List<Data?> row = sheet.rows[i];
-          if (row.length < 8) continue;
+      for (final table in excel.tables.keys) {
+        final sheet = excel.tables[table];
+        if (sheet == null || sheet.rows.isEmpty) continue;
 
-          String cellValue(int index) {
-            if (index >= row.length) return '';
-            return row[index]?.value?.toString().trim() ?? '';
+        /// 🔥 Step 1: Read header row
+        final headerRow = sheet.rows.first;
+
+        Map<String, int> columnIndex = {};
+
+        for (int i = 0; i < headerRow.length; i++) {
+          final headerValue = headerRow[i]?.value
+              ?.toString()
+              .trim()
+              .toLowerCase();
+
+          if (headerValue != null && headerValue.isNotEmpty) {
+            columnIndex[headerValue] = i;
           }
+        }
 
-          final String unit = cellValue(0);
-          final String subUnit = cellValue(1);
-          final String subSubUnit = cellValue(2);
-          final String designation = cellValue(3);
-          final String phone = cellValue(4);
-          final String mobileNumber = cellValue(5);
-          final String email = cellValue(7);
+        /// 🔥 Step 2: Helper to get value by column name
+        String getValue(List<Data?> row, String columnName) {
+          final index = columnIndex[columnName.toLowerCase()];
+          if (index == null || index >= row.length) return '';
+          final cell = row[index];
+          if (cell == null || cell.value == null) return '';
+          return cell.value.toString().trim();
+        }
 
-          if (unit.isNotEmpty || designation.isNotEmpty) {
-            final contact = Contact(
-              id: i,
-              unit: unit,
-              subUnit: subUnit,
-              subSubUnit: subSubUnit,
-              designation: designation,
-              mobileNumber: mobileNumber,
-              email: email,
-              phone: phone,
-              isActive: true,
-              isDeleted: false,
-              createdOn: DateTime.now(),
-              createdBy: 'system',
-              updatedOn: DateTime.now(),
-              updatedBy: 'system',
-            );
-            await addContact(contact);
-          }
+        /// 🔥 Step 3: Loop data rows
+        for (int i = 1; i < sheet.rows.length; i++) {
+          final row = sheet.rows[i];
+          final id = getValue(row, 'id');
+          final unit = getValue(row, 'unit');
+          final subUnit = getValue(row, 'subUnit');
+          final subSubUnit = getValue(row, 'subSubUnit');
+          final designation = getValue(row, 'designation');
+          final mobileNumber = getValue(row, 'mobileNumber');
+          final email = getValue(row, 'email');
+          final phone = getValue(row, 'phone');
+
+          if (unit.isEmpty && designation.isEmpty) continue;
+
+          final contact = Contact(
+            id: int.parse(id),
+            unit: unit,
+            subUnit: subUnit,
+            subSubUnit: subSubUnit,
+            designation: designation,
+            mobileNumber: mobileNumber,
+            email: email,
+            phone: phone,
+            isActive: true,
+            isDeleted: false,
+            createdOn: DateTime.now(),
+            createdBy: 'system',
+            updatedOn: DateTime.now(),
+            updatedBy: 'system',
+            deletedOn: DateTime(0),
+            deletedBy: '',
+            isFavorite: false,
+          );
+
+          await addContact(contact);
         }
       }
     } catch (e) {
-      // Fallback if excel fails
-      await _seedInitialData();
+      rethrow;
     }
   }
 
-  Future<void> _seedInitialData() async {
-    final now = DateTime.now();
-    final List<Contact> initialContacts = [
-      Contact(
-        id: 1,
-        unit: 'PHQ',
-        subUnit: '',
-        subSubUnit: '',
-        designation: 'IGP',
-        mobileNumber: '0123456789',
-        email: 'igp@police.gov.bd',
-        phone: '555-0100',
-        isActive: true,
-        isDeleted: false,
-        createdOn: now,
-        createdBy: 'system',
-        updatedOn: now,
-        updatedBy: 'system',
-      ),
-    ];
-
-    for (final contact in initialContacts) {
-      await addContact(contact);
-    }
-  }
 
   @override
   Future<List<Unit>> getUnits() async {
