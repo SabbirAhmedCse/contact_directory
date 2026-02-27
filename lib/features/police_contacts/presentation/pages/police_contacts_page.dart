@@ -32,6 +32,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadUnits();
+      _loadContacts();
     });
   }
 
@@ -52,88 +53,126 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
       _selectedSubUnit = null;
     });
   }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _phoneController.dispose();
-    super.dispose();
+  Future<void> _loadContacts() async {
+    context.read<PoliceContactsBloc>().add(const LoadContacts());
+   
+  }
+  Future<void> _searchContacts(String query) async {
+    final useCase = context.read<PoliceContactsUseCase>();
+     // context.read<PoliceContactsBloc>().add(SearchContactsEvent(query: query));
   }
 
   @override
+  void didUpdateWidget(PoliceContactsPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.key != widget.key) {
+      _loadContacts();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadContacts();
+  }
+
+ 
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider<PoliceContactsBloc>(
-      create: (BuildContext context) {
-        return PoliceContactsBloc(context.read<PoliceContactsUseCase>(),
-        )..add(const LoadContacts());
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('All Police Contacts')),
-        body: BlocBuilder<PoliceContactsBloc, PoliceContactsState>(
-          builder: (BuildContext context, PoliceContactsState state) {
-            if (state.status == PoliceContactsStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
+    return Scaffold(
+      appBar: AppBar(title: const Text('All Police Contacts')),
+      body: BlocBuilder<PoliceContactsBloc, PoliceContactsState>(
+        builder: (BuildContext context, PoliceContactsState state) {
+          if (state.status == PoliceContactsStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            final List<Contact> contacts = state.contacts;
+          final List<Contact> contacts = state.contacts;
 
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Column(
-                children: [
-                  CommonTextField(
-                    controller: _nameController,
-                    label: 'Search Contact',
-                    onChanged: (String value) {
-                      // context.read<PoliceContactsBloc>().add(
-                      //       SearchContactsEvent(query: value),
-                      //     );
-                    },
-                  ),
-                  Gap(16.h),
-                  CommonDropdown<Unit>(
-                    label: 'Unit',
-                    initialValue: _selectedUnit,
-                    items: _units
-                        .map(
-                          (Unit unit) => DropdownMenuItem<Unit>(
-                            value: unit,
-                            child: Row(
-                              children: [
-                                const Icon(Icons.local_police),
-                                Gap(8.w),
-                                Expanded(
-                                  child: Text(
-                                    unit.name,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Column(
+              children: [
+                CommonTextField(
+                  controller: _nameController,
+                  label: 'Search Contact',
+                  onChanged: (String value) {
+                    // context.read<PoliceContactsBloc>().add(
+                    //       SearchContactsEvent(query: value),
+                    //     );
+                  },
+                ),
+                Gap(16.h),
+                CommonDropdown<Unit>(
+                  label: 'Unit',
+                  initialValue: _selectedUnit,
+                  items: _units
+                      .map(
+                        (Unit unit) => DropdownMenuItem<Unit>(
+                          value: unit,
+                          child: Row(
+                            children: [
+                              const Icon(Icons.local_police),
+                              Gap(8.w),
+                              Expanded(
+                                child: Text(
+                                  unit.name,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )
-                        .toList(),
-                    onChanged: (Unit? value) {
-                      setState(() {
-                        _selectedUnit = value;
-                        _subUnits
-                          ..clear()
-                          ..addAll(value?.units ?? <Unit>[]);
-                        _selectedSubUnit = null;
-                        _subSubUnits.clear();
-                        _selectedSubSubUnit = null;
-                      });
-                    },
-                  ),
-                  Gap(16.h),
-                  if (_subUnits.isNotEmpty) ...[
-                    Row(
-                      children: [
+                        ),
+                      )
+                      .toList(),
+                  onChanged: (Unit? value) {
+                    setState(() {
+                      _selectedUnit = value;
+                      _subUnits
+                        ..clear()
+                        ..addAll(value?.units ?? <Unit>[]);
+                      _selectedSubUnit = null;
+                      _subSubUnits.clear();
+                      _selectedSubSubUnit = null;
+                    });
+                  },
+                ),
+                Gap(16.h),
+                if (_subUnits.isNotEmpty) ...[
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CommonDropdown<Unit>(
+                          label: 'Sub Unit',
+                          initialValue: _selectedSubUnit,
+                          items: _subUnits
+                              .map(
+                                (Unit unit) => DropdownMenuItem<Unit>(
+                                  value: unit,
+                                  child: Text(unit.name),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (Unit? value) {
+                            setState(() {
+                              _selectedSubUnit = value;
+                              _subSubUnits
+                                ..clear()
+                                ..addAll(value?.units ?? <Unit>[]);
+                              _selectedSubSubUnit = null;
+                            });
+                          },
+                        ),
+                      ),
+
+                      if (_subSubUnits.isNotEmpty) ...[
+                        Gap(16.w),
                         Expanded(
                           child: CommonDropdown<Unit>(
-                            label: 'Sub Unit',
-                            initialValue: _selectedSubUnit,
-                            items: _subUnits
+                            label: 'Sub Sub Unit',
+                            initialValue: _selectedSubSubUnit,
+                            items: _subSubUnits
                                 .map(
                                   (Unit unit) => DropdownMenuItem<Unit>(
                                     value: unit,
@@ -143,61 +182,38 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                                 .toList(),
                             onChanged: (Unit? value) {
                               setState(() {
-                                _selectedSubUnit = value;
-                                _subSubUnits
-                                  ..clear()
-                                  ..addAll(value?.units ?? <Unit>[]);
-                                _selectedSubSubUnit = null;
+                                _selectedSubSubUnit = value;
                               });
                             },
                           ),
                         ),
-
-                        if (_subSubUnits.isNotEmpty) ...[
-                          Gap(16.w),
-                          Expanded(
-                            child: CommonDropdown<Unit>(
-                              label: 'Sub Sub Unit',
-                              initialValue: _selectedSubSubUnit,
-                              items: _subSubUnits
-                                  .map(
-                                    (Unit unit) => DropdownMenuItem<Unit>(
-                                      value: unit,
-                                      child: Text(unit.name),
-                                    ),
-                                  )
-                                  .toList(),
-                              onChanged: (Unit? value) {
-                                setState(() {
-                                  _selectedSubSubUnit = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
                       ],
-                    ),
-                  ],
-                  Expanded(
-                    child: ListView.separated(
-                      itemCount: contacts.length,
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const Divider(height: 1);
-                      },
-                      itemBuilder: (BuildContext context, int index) {
-                        final Contact contact = contacts[index];
-                        return ListTile(
-                          title: Text(contact.designation??''),
-                          subtitle: Text(contact.mobileNumber?.isNotEmpty ?? false ? contact.mobileNumber ?? '' : contact.phone ?? ''),
-                        );
-                      },
-                    ),
+                    ],
                   ),
                 ],
-              ),
-            );
-          },
-        ),
+                Expanded(
+                  child: ListView.separated(
+                    itemCount: contacts.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Divider(height: 1);
+                    },
+                    itemBuilder: (BuildContext context, int index) {
+                      final Contact contact = contacts[index];
+                      return ListTile(
+                        title: Text(contact.designation ?? ''),
+                        subtitle: Text(
+                          contact.mobileNumber?.isNotEmpty ?? false
+                              ? contact.mobileNumber ?? ''
+                              : contact.phone ?? '',
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

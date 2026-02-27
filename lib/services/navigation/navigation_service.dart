@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/core/presentation/pages/splash_screen.dart';
-import '../../res/routes/route_paths.dart';
+import '../../features/core/presentation/routes/route_paths.dart';
 
 class NavigationService {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -64,8 +64,8 @@ class NavigationService {
 
   static Future<void> logoutAndNavigateToLoginScreen() async {
     BuildContext context = navigatorKey.currentContext!;
-    Navigator.of(context).pushNamedAndRemoveUntil(
-        RoutePaths.splash, (Route<dynamic> route) => false);
+    //Navigator.of(context).pushNamedAndRemoveUntil(
+        //RoutePaths.splash, (Route<dynamic> route) => false);
   }
 
   static Future<dynamic> navigateToWidget(Widget widget) {

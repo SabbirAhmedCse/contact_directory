@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../../../police_contacts/presentation/pages/police_contacts_page.dart';
 import '../pages/home_screen.dart';
-import 'app_routes.dart';
+import 'route_paths.dart';
 
 
 class AppRouter {
@@ -12,10 +12,10 @@ class AppRouter {
     Widget widget;
 
     switch (settings.name) {
-      case AppRoutes.home:
+      case RoutePaths.home:
         widget = const HomeScreen();
         break;
-      case AppRoutes.policeContacts:
+      case RoutePaths.policeContactsPage:
         widget = const PoliceContactsPage();
         break;
       default:

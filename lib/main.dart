@@ -10,7 +10,7 @@ import 'features/core/data/cache/hive_db_services.dart';
 import 'app/flavours/app_config.dart';
 import 'features/core/domain/di/service_locator.dart';
 import 'features/core/presentation/routes/app_router.dart';
-import 'features/core/presentation/routes/app_routes.dart';
+import 'features/core/presentation/routes/route_paths.dart';
 import 'features/police_contacts/domain/usecases/police_contacts_usecase.dart';
 import 'features/police_contacts/presentation/bloc/police_contacts_bloc.dart';
 import 'services/navigation/navigation_service.dart';
@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
               ),
-              initialRoute: AppRoutes.home,
+              initialRoute: RoutePaths.home,
               navigatorKey: NavigationService.navigatorKey,
               onGenerateRoute: AppRouter.generateRoute,
             );
