@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
-import 'package:excel/excel.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/units.dart';
@@ -10,13 +7,14 @@ import '../../../core/data/cache/hive_db_services.dart';
 
 class PoliceContactsLocalDataSource implements PoliceContactsRepository {
   PoliceContactsLocalDataSource();
+  final localDb = HiveDBServices.instance;
 
   @override
   Future<List<Contact>> getContacts() async {
     try {
-      final  box = HiveDBServices.instance.policeContacts;
+      final  policeContactsBox = localDb.policeContacts;
 
-      final List<Contact> contacts = await box.getAll();
+      final List<Contact> contacts = await policeContactsBox.getAll();
 
       if (contacts.isNotEmpty) {
         return contacts;
@@ -51,7 +49,7 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
         );
       }).toList();
 
-      await box.upsertEntities(entities:contactList);
+      await policeContactsBox.upsertEntities(entities:contactList);
 
       return contactList;
     } catch (e) {
@@ -61,7 +59,7 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
 
   @override
   Future<void> addContact(Contact contact) async {
-    await HiveDBServices.instance.policeContacts.save(contact);
+    await localDb.policeContacts.save(contact);
   }
 
   @override
@@ -96,5 +94,10 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
           )
           .toList(),
     );
+  }
+
+  @override
+  Future<void> saveFavoriteContact(Contact contact) async {
+    await localDb.policeContacts.save(contact);
   }
 }

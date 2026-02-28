@@ -72,5 +72,12 @@ class PoliceContactsRemoteDataSource implements PoliceContactsRepository {
     // TODO: implement getUnits
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> saveFavoriteContact(Contact contact) async {
+    await ref.child(contact.id.toString()).update(<String, dynamic>{
+      'isFavorite': contact.isFavorite,
+    });
+  }
 }
 

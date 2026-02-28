@@ -121,6 +121,17 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     Emitter<PoliceContactsState> emit,
   ) async {
     emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
+    try {
+      final List<Contact> favoriteContacts = state.allContacts.where((Contact contact) => contact.isFavorite).toList();
+      emit(
+        state.copyWith(
+          status: PoliceContactsStatus.policeContactsLoaded,
+          favoriteContacts: favoriteContacts,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: PoliceContactsStatus.policeContactsFailure));
+    }
   }
 
   Future<void> _onRemoveFavoriteContact(
