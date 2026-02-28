@@ -10,6 +10,7 @@ import '../../domain/usecases/police_contacts_usecase.dart';
 import '../../../core/presentation/widgets/common_text_field.dart';
 import '../../../core/presentation/widgets/common_dropdown.dart';
 import '../bloc/police_contacts_bloc.dart';
+import '../widget/contact_details_dialog.dart';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -178,11 +179,19 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                         final contact = contacts[index];
                         return Padding(
                           padding: EdgeInsets.only(bottom: _cardSpacing.h),
-                          child: _ContactCard(
-                            contact: contact,
-                            primaryPhone: contact.primaryPhone,
-                            color: color,
-                            style: style,
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                              context: context,
+                              builder: (context) => ContactDetailsDialog(contact: contact),
+                            );
+                            },
+                            child: _ContactCard(
+                              contact: contact,
+                              primaryPhone: contact.primaryPhone,
+                              color: color,
+                              style: style,
+                            ),
                           ),
                         );
                       },
@@ -660,21 +669,23 @@ class _ContactCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: () {
-                  // TODO: url_launcher to dial primaryPhone
+                  context.read<PoliceContactsBloc>().add(
+                    SaveFavoriteContactEvent(contact: contact),
+                  );
                 },
                 borderRadius: BorderRadius.circular(10.r),
                 child: Padding(
                   padding: EdgeInsets.all(8.w),
                   child: Icon(
-                    Icons.call_rounded,
+                    contact.isFavorite   ? Icons.favorite  : Icons.favorite_border_rounded,
                     size: 22.sp,
-                    color: color.primaryColor,
+                    color: color.red,
                   ),
                 ),
               ),
             ),
-        ],
-      ),
+          ],
+        ),
     );
   }
 }

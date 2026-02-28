@@ -94,18 +94,26 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     SaveFavoriteContactEvent event,
     Emitter<PoliceContactsState> emit,
   ) async {
-    try {
-      final List<Contact> contacts = await policeContactsUseCase.getContacts();
-      emit(
-        state.copyWith(
-          status: PoliceContactsStatus.policeContactsLoaded,
-          allContacts: contacts,
-          favoriteContacts: contacts,
-        ),
-      );
-    } catch (_) {
-      emit(state.copyWith(status: PoliceContactsStatus.policeContactsFailure));
-    }
+    final Contact updated = event.contact.copyWith(
+      isFavorite: !event.contact.isFavorite,
+    );
+    final List<Contact> allContacts = state.allContacts
+        .map((Contact c) => c.id == updated.id ? updated : c)
+        .toList();
+    final List<Contact> filteredContacts = state.filteredContacts
+        .map((Contact c) => c.id == updated.id ? updated : c)
+        .toList();
+    final List<Contact> favoriteContacts = updated.isFavorite
+        ? [...state.favoriteContacts.where((Contact c) => c.id != updated.id), updated]
+        : state.favoriteContacts.where((Contact c) => c.id != updated.id).toList();
+    emit(
+      state.copyWith(
+        status: PoliceContactsStatus.policeContactsLoaded,
+        allContacts: allContacts,
+        filteredContacts: filteredContacts,
+        favoriteContacts: favoriteContacts,
+      ),
+    );
   }
 
   Future<void> _onGetFavoriteContacts(
