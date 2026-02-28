@@ -77,18 +77,16 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
 
   void _applyUnitFilter() {
     context.read<PoliceContactsBloc>().add(
-          FilterContacts(
-            unit: _selectedUnit?.name,
-            subUnit: _selectedSubUnit?.name,
-            subSubUnit: _selectedSubSubUnit?.name,
-          ),
-        );
+      FilterContacts(
+        unit: _selectedUnit?.name,
+        subUnit: _selectedSubUnit?.name,
+        subSubUnit: _selectedSubSubUnit?.name,
+      ),
+    );
   }
 
   void _onSearchChanged(String value) {
-    context.read<PoliceContactsBloc>().add(
-          SearchContacts(query: value.trim()),
-        );
+    context.read<PoliceContactsBloc>().add(SearchContacts(query: value.trim()));
   }
 
   @override
@@ -174,32 +172,51 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                     _bottomPadding.h,
                   ),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        final contact = contacts[index];
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: _cardSpacing.h),
-                          child: GestureDetector(
-                            onTap: () {
-                              showDialog(
+                    delegate: SliverChildBuilderDelegate((
+                      BuildContext context,
+                      int index,
+                    ) {
+                      final contact = contacts[index];
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: _cardSpacing.h),
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
                               context: context,
-                              builder: (context) => ContactDetailsDialog(contact: contact),
+                              builder: (context) =>
+                                  ContactDetailsDialog(contact: contact),
                             );
-                            },
-                            child: _ContactCard(
-                              contact: contact,
-                              primaryPhone: contact.primaryPhone,
-                              color: color,
-                              style: style,
-                            ),
+                          },
+                          child: _ContactCard(
+                            contact: contact,
+                            primaryPhone: contact.primaryPhone,
+                            color: color,
+                            style: style,
                           ),
-                        );
-                      },
-                      childCount: contacts.length,
-                    ),
+                        ),
+                      );
+                    }, childCount: contacts.length),
                   ),
                 ),
             ],
+          );
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: TweenAnimationBuilder(
+        tween: Tween<double>(begin: 1.0, end: 1.2),
+        duration: const Duration(milliseconds: 800),
+        curve: Curves.bounceIn,
+        builder: (context, double scale, child) {
+          return Transform.scale(
+            scale: scale,
+            child: FloatingActionButton(
+              onPressed: () {
+                
+              },
+              backgroundColor: Colors.red,
+              child: const Icon(size: 40,Icons.favorite, color: Colors.white),
+            ),
           );
         },
       ),
@@ -240,7 +257,8 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
 // App bar & state widgets
 // ---------------------------------------------------------------------------
 
-class _PoliceContactsAppBar extends StatelessWidget implements PreferredSizeWidget {
+class _PoliceContactsAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   const _PoliceContactsAppBar({required this.color, required this.style});
 
   final AppColors color;
@@ -320,11 +338,7 @@ class _ErrorState extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Icon(
-            Icons.error_outline_rounded,
-            size: 48.sp,
-            color: color.appRed,
-          ),
+          Icon(Icons.error_outline_rounded, size: 48.sp, color: color.appRed),
           Gap(12.h),
           Text(
             'Could not load contacts',
@@ -332,10 +346,7 @@ class _ErrorState extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           Gap(8.h),
-          TextButton(
-            onPressed: onRetry,
-            child: const Text('Retry'),
-          ),
+          TextButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );
@@ -378,10 +389,7 @@ class _FilterSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'Filter by unit',
-          style: style.w600s14(color.primaryTextColor),
-        ),
+        Text('Filter by unit', style: style.w600s14(color.primaryTextColor)),
         Gap(10.h),
         CommonDropdown<Unit>(
           label: 'Unit',
@@ -484,10 +492,7 @@ class _ContactsListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Text(
-          'Contacts',
-          style: style.w700s16(color.primaryTextColor),
-        ),
+        Text('Contacts', style: style.w700s16(color.primaryTextColor)),
         Gap(8.w),
         Container(
           padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
@@ -495,10 +500,7 @@ class _ContactsListHeader extends StatelessWidget {
             color: color.primaryColor.withOpacity(0.12),
             borderRadius: BorderRadius.circular(12.r),
           ),
-          child: Text(
-            '$count',
-            style: style.w600s12(color.primaryColor),
-          ),
+          child: Text('$count', style: style.w600s12(color.primaryColor)),
         ),
       ],
     );
@@ -677,15 +679,17 @@ class _ContactCard extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(8.w),
                   child: Icon(
-                    contact.isFavorite   ? Icons.favorite  : Icons.favorite_border_rounded,
+                    contact.isFavorite
+                        ? Icons.favorite
+                        : Icons.favorite_border_rounded,
                     size: 22.sp,
                     color: color.red,
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+        ],
+      ),
     );
   }
 }
