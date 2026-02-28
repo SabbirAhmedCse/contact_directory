@@ -29,6 +29,7 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
         state.copyWith(
           status: PoliceContactsStatus.policeContactsLoaded,
           allContacts: contacts,
+          filteredContacts: contacts,
           favoriteContacts: contacts,
         ),
       );
@@ -41,14 +42,27 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     SearchContacts event,
     Emitter<PoliceContactsState> emit,
   ) async {
-    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
-    final List<Contact> filteredContacts = state.allContacts.where((Contact contact) {
-      if (contact.designation?.toLowerCase().contains(event.query.toLowerCase()) ?? false) {
-        return true;
-      }
-      return false;
+    if (event.query.isEmpty) {
+      emit(state.copyWith(
+        status: PoliceContactsStatus.policeContactsLoaded,
+        filteredContacts: state.allContacts,
+      ));
+      return;
+    }
+    final List<Contact> filtered = state.allContacts.where((Contact contact) {
+      final String q = event.query.toLowerCase();
+      final bool matchDesignation =
+          contact.designation?.toLowerCase().contains(q) ?? false;
+      final bool matchMobile =
+          contact.mobileNumber?.toLowerCase().contains(q) ?? false;
+      final bool matchPhone = contact.phone?.toLowerCase().contains(q) ?? false;
+      final bool matchUnit = contact.unit?.toLowerCase().contains(q) ?? false;
+      return matchDesignation || matchMobile || matchPhone || matchUnit;
     }).toList();
-    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoaded, filteredContacts: filteredContacts));
+    emit(state.copyWith(
+      status: PoliceContactsStatus.policeContactsLoaded,
+      filteredContacts: filtered,
+    ));
   }
 
   Future<void> _onFilterContacts(
