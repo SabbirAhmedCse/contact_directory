@@ -10,64 +10,101 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
   final PoliceContactsUseCase policeContactsUseCase;
   PoliceContactsBloc(this.policeContactsUseCase) : super(PoliceContactsState()) { 
     on<LoadContacts>(_onLoadContacts);
-    on<AddContactEvent>(_onAddContact);
+    on<SearchContacts>(_onSearchContacts);
+    on<FilterContacts>(_onFilterContacts);
+    on<SaveFavoriteContactEvent>(_onSaveFavoriteContact);
+    on<GetFavoriteContactsEvent>(_onGetFavoriteContacts);
+    on<RemoveFavoriteContactEvent>(_onRemoveFavoriteContact);
   }
 
   Future<void> _onLoadContacts(
     LoadContacts event,
     Emitter<PoliceContactsState> emit,
   ) async {
-    emit(state.copyWith(status: PoliceContactsStatus.loading));
+    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
 
     try {
       final List<Contact> contacts = await policeContactsUseCase.getContacts();
       emit(
         state.copyWith(
-          status: PoliceContactsStatus.loaded,
-          contacts: contacts,
+          status: PoliceContactsStatus.policeContactsLoaded,
+          allContacts: contacts,
+          favoriteContacts: contacts,
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: PoliceContactsStatus.failure));
+      emit(state.copyWith(status: PoliceContactsStatus.policeContactsFailure));
     }
   }
 
-  Future<void> _onAddContact(
-    AddContactEvent event,
+  Future<void> _onSearchContacts(
+    SearchContacts event,
     Emitter<PoliceContactsState> emit,
   ) async {
-    final now = DateTime.now();
-    final Contact contact = Contact(
-      id: now.millisecondsSinceEpoch,
-      unit: '',
-      subUnit: '',
-      subSubUnit: '',
-      designation: event.name, // Mapping name to designation for now
-      mobileNumber: event.phone,
-      email: '',
-      phone: '',
-      isActive: true,
-      isDeleted: false,
-      createdOn: now,
-      createdBy: 'user',
-      updatedOn: now,
-      updatedBy: 'user',
-      deletedOn: DateTime(0),
-      deletedBy: '',
-      isFavorite: false,
-    );
+    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
+    final List<Contact> filteredContacts = state.allContacts.where((Contact contact) {
+      if (contact.designation?.toLowerCase().contains(event.query.toLowerCase()) ?? false) {
+        return true;
+      }
+      return false;
+    }).toList();
+    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoaded, filteredContacts: filteredContacts));
+  }
 
+  Future<void> _onFilterContacts(
+    FilterContacts event,
+    Emitter<PoliceContactsState> emit,
+  ) async {
+    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
+    final List<Contact> filteredContacts = state.allContacts.where((Contact contact) {
+      if (event.unit != null && contact.unit != event.unit) {
+        return false;
+      }
+      if (event.subUnit != null && contact.subUnit != event.subUnit) {
+        return false;
+      }
+      if (event.subSubUnit != null && contact.subSubUnit != event.subSubUnit) {
+        return false;
+      }
+      return true;
+    }).toList();
+    emit(
+      state.copyWith(
+        status: PoliceContactsStatus.policeContactsLoaded,
+        filteredContacts: filteredContacts,
+      ),
+    );
+  }
+
+  Future<void> _onSaveFavoriteContact(
+    SaveFavoriteContactEvent event,
+    Emitter<PoliceContactsState> emit,
+  ) async {
     try {
-      await policeContactsUseCase.addContact(contact);
       final List<Contact> contacts = await policeContactsUseCase.getContacts();
       emit(
         state.copyWith(
-          status: PoliceContactsStatus.loaded,
-          contacts: contacts,
+          status: PoliceContactsStatus.policeContactsLoaded,
+          allContacts: contacts,
+          favoriteContacts: contacts,
         ),
       );
     } catch (_) {
-      emit(state.copyWith(status: PoliceContactsStatus.failure));
+      emit(state.copyWith(status: PoliceContactsStatus.policeContactsFailure));
     }
+  }
+
+  Future<void> _onGetFavoriteContacts(
+    GetFavoriteContactsEvent event,
+    Emitter<PoliceContactsState> emit,
+  ) async {
+    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
+  }
+
+  Future<void> _onRemoveFavoriteContact(
+    RemoveFavoriteContactEvent event,
+    Emitter<PoliceContactsState> emit,
+  ) async {
+    emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
   }
 }

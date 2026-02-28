@@ -18,8 +18,7 @@ class PoliceContactsPage extends StatefulWidget {
 }
 
 class _PoliceContactsPageState extends State<PoliceContactsPage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   final List<Unit> _units = <Unit>[];
   Unit? _selectedUnit;
   final List<Unit> _subUnits = <Unit>[];
@@ -84,18 +83,18 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
       appBar: AppBar(title: const Text('All Police Contacts')),
       body: BlocBuilder<PoliceContactsBloc, PoliceContactsState>(
         builder: (BuildContext context, PoliceContactsState state) {
-          if (state.status == PoliceContactsStatus.loading) {
+          if (state.status == PoliceContactsStatus.policeContactsLoading) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final List<Contact> contacts = state.contacts;
+          final List<Contact> contacts = state.allContacts;
 
           return Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Column(
               children: [
                 CommonTextField(
-                  controller: _nameController,
+                  controller: _searchController,
                   label: 'Search Contact',
                   onChanged: (String value) {
                     // context.read<PoliceContactsBloc>().add(

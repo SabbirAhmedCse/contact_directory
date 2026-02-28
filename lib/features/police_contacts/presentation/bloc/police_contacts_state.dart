@@ -1,32 +1,40 @@
 part of 'police_contacts_bloc.dart';
 
 enum PoliceContactsStatus {
-  initial,
-  loading,
-  loaded,
-  failure,
+  policeContactsInitial,
+  policeContactsLoading,
+  policeContactsLoaded,
+  policeContactsFailure,
 }
 
 class PoliceContactsState extends Equatable {
-  final PoliceContactsStatus? status;  
-  final List<Contact> contacts;
+  final PoliceContactsStatus status;
+  final List<Contact> allContacts;
+  final List<Contact> filteredContacts;
+  final List<Contact> favoriteContacts;
 
   const PoliceContactsState({
-     this.status,
-     this.contacts = const [],
+    this.status = PoliceContactsStatus.policeContactsInitial,
+    this.allContacts = const [],
+    this.filteredContacts = const [],
+    this.favoriteContacts = const [],
   });
 
 
   PoliceContactsState copyWith({
     PoliceContactsStatus? status,
-    List<Contact>? contacts,
+    List<Contact>? allContacts,
+    List<Contact>? filteredContacts,
+    List<Contact>? favoriteContacts,
   }) {
     return PoliceContactsState(
       status: status ?? this.status,
-      contacts: contacts ?? this.contacts,
+      allContacts: allContacts ?? this.allContacts,
+      filteredContacts: filteredContacts ?? this.filteredContacts,
+      favoriteContacts: favoriteContacts ?? this.favoriteContacts,
     );
   }
 
   @override
-  List<Object?> get props => <Object?>[status, contacts];
+  List<Object?> get props => <Object?>[status, allContacts, filteredContacts, favoriteContacts];
 }
