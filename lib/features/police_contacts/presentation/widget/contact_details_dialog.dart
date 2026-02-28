@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 
 import '../../domain/entities/contact.dart';
+import 'action_button.dart';
 
 class ContactDetailsDialog extends StatelessWidget {
   final Contact contact;
@@ -142,7 +145,6 @@ class ContactDetailsDialog extends StatelessWidget {
 
             // Divider
             Divider(height: 1, color: Colors.grey.withOpacity(0.15)),
-
             // Contact info
             Padding(
               padding: const EdgeInsets.all(20),
@@ -187,7 +189,43 @@ class ContactDetailsDialog extends StatelessWidget {
               ),
             ),
 
-            // Actions
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ActionButton(
+                  icon: Icons.phone_rounded,
+                  label: 'Call',
+                  color: const Color(0xFF43A047),
+                  onTap:  () {},
+                ),
+                ActionButton(
+                  icon: Icons.sms_rounded,
+                  label: 'SMS',
+                  color: const Color(0xFF1E88E5),
+                  onTap:  () {},
+                ),
+                ActionButton(
+                  icon: Icons.wechat_sharp,
+                  label: 'WeChat',
+                  color: const Color(0xFF00C853),
+                  onTap:  () {},
+                ),
+                ActionButton(
+                  icon: Icons.email_rounded,
+                  label: 'Email',
+                  color: const Color(0xFFE53935),
+                  onTap:  () {},
+                ),
+                ActionButton(
+                  icon: Icons.share_rounded,
+                  label: 'Share',
+                  color: const Color(0xFF8E24AA),
+                  onTap:  () {},
+                  isLast: true,
+                ),
+              ],
+            ),
+            Gap(8.h),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
               child: Row(

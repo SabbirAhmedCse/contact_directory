@@ -97,21 +97,18 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     final Contact updated = event.contact.copyWith(
       isFavorite: !event.contact.isFavorite,
     );
+    await policeContactsUseCase.saveFavoriteContact(updated);
     final List<Contact> allContacts = state.allContacts
         .map((Contact c) => c.id == updated.id ? updated : c)
         .toList();
     final List<Contact> filteredContacts = state.filteredContacts
         .map((Contact c) => c.id == updated.id ? updated : c)
         .toList();
-    final List<Contact> favoriteContacts = updated.isFavorite
-        ? [...state.favoriteContacts.where((Contact c) => c.id != updated.id), updated]
-        : state.favoriteContacts.where((Contact c) => c.id != updated.id).toList();
     emit(
       state.copyWith(
         status: PoliceContactsStatus.policeContactsLoaded,
         allContacts: allContacts,
         filteredContacts: filteredContacts,
-        favoriteContacts: favoriteContacts,
       ),
     );
   }
@@ -139,5 +136,27 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     Emitter<PoliceContactsState> emit,
   ) async {
     emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
+    try {
+      final Contact updated = event.contact.copyWith(
+        isFavorite: false,
+      );
+      await policeContactsUseCase.saveFavoriteContact(updated);
+      final List<Contact> allContacts = state.allContacts
+          .map((Contact c) => c.id == updated.id ? updated : c)
+          .toList();
+      final List<Contact> filteredContacts = state.filteredContacts
+          .map((Contact c) => c.id == updated.id ? updated : c)
+          .toList();
+          
+      emit(
+        state.copyWith(
+          status: PoliceContactsStatus.policeContactsLoaded,
+          allContacts: allContacts,
+          filteredContacts: filteredContacts,
+        ),
+      );
+    } catch (_) {
+      emit(state.copyWith(status: PoliceContactsStatus.policeContactsFailure));
+    }
   }
 }

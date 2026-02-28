@@ -1,3 +1,4 @@
+import 'package:contact_directory/features/police_contacts/presentation/widget/contact_primary_phone.dart';
 import 'package:contact_directory/resources/resource_export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +11,12 @@ import '../../domain/usecases/police_contacts_usecase.dart';
 import '../../../core/presentation/widgets/common_text_field.dart';
 import '../../../core/presentation/widgets/common_dropdown.dart';
 import '../bloc/police_contacts_bloc.dart';
+import '../widget/contact_card.dart';
 import '../widget/contact_details_dialog.dart';
+import '../widget/empty_State.dart';
+import '../widget/error_state.dart';
+import '../widget/police_favorite_bottomsheet.dart';
+import '../widget/loading_state.dart';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -101,10 +107,10 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
         builder: (BuildContext context, PoliceContactsState state) {
           if (state.status == PoliceContactsStatus.policeContactsLoading &&
               state.allContacts.isEmpty) {
-            return _LoadingState(color: color, style: style);
+            return LoadingState(color: color, style: style);
           }
           if (state.status == PoliceContactsStatus.policeContactsFailure) {
-            return _ErrorState(
+            return ErrorState(
               color: color,
               style: style,
               onRetry: _loadContacts,
@@ -161,7 +167,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
               if (contacts.isEmpty)
                 SliverFillRemaining(
                   hasScrollBody: false,
-                  child: _EmptyState(style: style, color: color),
+                  child: EmptyState(style: style, color: color),
                 )
               else
                 SliverPadding(
@@ -187,7 +193,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                                   ContactDetailsDialog(contact: contact),
                             );
                           },
-                          child: _ContactCard(
+                          child: ContactCard(
                             contact: contact,
                             primaryPhone: contact.primaryPhone,
                             color: color,
@@ -212,10 +218,10 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
             scale: scale,
             child: FloatingActionButton(
               onPressed: () {
-                
+                policeFavoriteContactsBottomSheet(context:context);
               },
               backgroundColor: Colors.red,
-              child: const Icon(size: 40,Icons.favorite, color: Colors.white),
+              child: const Icon(size: 40, Icons.favorite, color: Colors.white),
             ),
           );
         },
@@ -286,69 +292,6 @@ class _PoliceContactsAppBar extends StatelessWidget
         style: style.w700s18(color.primaryTextColor),
       ),
       centerTitle: false,
-    );
-  }
-}
-
-class _LoadingState extends StatelessWidget {
-  const _LoadingState({required this.color, required this.style});
-
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          SizedBox(
-            width: 40.w,
-            height: 40.w,
-            child: CircularProgressIndicator(
-              strokeWidth: 2.5,
-              color: color.primaryColor,
-            ),
-          ),
-          Gap(16.h),
-          Text(
-            'Loading contacts…',
-            style: style.w400s14(color.tertiaryTextColor),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorState extends StatelessWidget {
-  const _ErrorState({
-    required this.color,
-    required this.style,
-    required this.onRetry,
-  });
-
-  final AppColors color;
-  final AppTextStyle style;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Icon(Icons.error_outline_rounded, size: 48.sp, color: color.appRed),
-          Gap(12.h),
-          Text(
-            'Could not load contacts',
-            style: style.w600s16(color.primaryTextColor),
-            textAlign: TextAlign.center,
-          ),
-          Gap(8.h),
-          TextButton(onPressed: onRetry, child: const Text('Retry')),
-        ],
-      ),
     );
   }
 }
@@ -556,191 +499,10 @@ class _SearchCard extends StatelessWidget {
   }
 }
 
-class _ContactCard extends StatelessWidget {
-  const _ContactCard({
-    required this.contact,
-    required this.primaryPhone,
-    required this.color,
-    required this.style,
-  });
 
-  final Contact contact;
-  final String primaryPhone;
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: color.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: color.primaryColorBorder, width: 1),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: color.primaryTextColor.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            width: 44.w,
-            height: 44.w,
-            decoration: BoxDecoration(
-              color: color.primaryColor.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(10.r),
-            ),
-            alignment: Alignment.center,
-            child: Icon(
-              Icons.person_rounded,
-              size: 24.sp,
-              color: color.primaryColor,
-            ),
-          ),
-          Gap(14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  contact.designation ?? '—',
-                  style: style.w600s14(color.primaryTextColor),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (contact.unit != null && contact.unit!.isNotEmpty) ...[
-                  Gap(4.h),
-                  Text(
-                    contact.unit!,
-                    style: style.w400s12(color.tertiaryTextColor),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                if (primaryPhone.isNotEmpty) ...[
-                  Gap(8.h),
-                  Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.phone_rounded,
-                        size: 16.sp,
-                        color: color.primaryColor,
-                      ),
-                      Gap(6.w),
-                      SelectableText(
-                        primaryPhone,
-                        style: style.w500s14(color.primaryColor),
-                      ),
-                    ],
-                  ),
-                ],
-                if (contact.email != null &&
-                    contact.email!.isNotEmpty &&
-                    primaryPhone.isNotEmpty) ...[
-                  Gap(4.h),
-                ],
-                if (contact.email != null && contact.email!.isNotEmpty) ...[
-                  Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.mail_outline_rounded,
-                        size: 16.sp,
-                        color: color.tertiaryTextColor,
-                      ),
-                      Gap(6.w),
-                      Expanded(
-                        child: SelectableText(
-                          contact.email!,
-                          style: style.w400s12(color.tertiaryTextColor),
-                          maxLines: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ],
-            ),
-          ),
-          if (primaryPhone.isNotEmpty)
-            Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  context.read<PoliceContactsBloc>().add(
-                    SaveFavoriteContactEvent(contact: contact),
-                  );
-                },
-                borderRadius: BorderRadius.circular(10.r),
-                child: Padding(
-                  padding: EdgeInsets.all(8.w),
-                  child: Icon(
-                    contact.isFavorite
-                        ? Icons.favorite
-                        : Icons.favorite_border_rounded,
-                    size: 22.sp,
-                    color: color.red,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState({required this.style, required this.color});
-
-  final AppTextStyle style;
-  final AppColors color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 32.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              Icons.contact_phone_outlined,
-              size: 64.sp,
-              color: color.iconColor,
-            ),
-            Gap(16.h),
-            Text(
-              'No contacts found',
-              style: style.w600s16(color.primaryTextColor),
-              textAlign: TextAlign.center,
-            ),
-            Gap(8.h),
-            Text(
-              'Try a different search or filter.',
-              style: style.w400s14(color.tertiaryTextColor),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Contact extension
 // ---------------------------------------------------------------------------
 
-extension _ContactPrimaryPhone on Contact {
-  String get primaryPhone {
-    if (mobileNumber != null && mobileNumber!.isNotEmpty) {
-      return mobileNumber!;
-    }
-    return phone ?? '';
-  }
-}
+

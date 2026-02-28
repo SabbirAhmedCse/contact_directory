@@ -71,6 +71,12 @@ class _InMemoryContactRepository implements PoliceContactsRepository {
   Future<List<Unit>> getUnits() {
     return Future<List<Unit>>.value(<Unit>[]);
   }
+  
+  @override
+  Future<void> saveFavoriteContact(Contact contact) {
+    // TODO: implement saveFavoriteContact
+    throw UnimplementedError();
+  }
 }
 
 void main() {

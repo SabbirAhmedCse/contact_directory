@@ -18,4 +18,8 @@ class PoliceContactsUseCase {
   Future<List<Unit>> getUnits() {
     return repository.getUnits();
   }
+  
+  Future<void> saveFavoriteContact(Contact contact) {
+    return repository.saveFavoriteContact(contact);
+  }
 }
