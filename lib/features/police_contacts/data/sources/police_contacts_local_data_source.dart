@@ -86,6 +86,7 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
 
     return Unit(
       id: map['id'] as int,
+      logo: map['logo'] as String?,
       name: map['name'] as String,
       units: children
           .map<Unit>(

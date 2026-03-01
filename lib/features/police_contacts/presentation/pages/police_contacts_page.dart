@@ -95,6 +95,38 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
     context.read<PoliceContactsBloc>().add(SearchContacts(query: value.trim()));
   }
 
+  bool get _isSelectionComplete {
+    // If no unit is selected, selection is not complete
+    if (_selectedUnit == null) return false;
+
+    // Selection is complete if:
+    // 1. A Unit is selected and it has no sub-units
+    if (_subUnits.isEmpty) return true;
+
+    // 2. A Sub Unit is selected and it has no sub-sub-units
+    if (_selectedSubUnit != null && _subSubUnits.isEmpty) return true;
+
+    // 3. A Sub Sub Unit is selected
+    if (_selectedSubSubUnit != null) return true;
+
+    return false;
+  }
+
+  void _onUnitCardTapped(Unit unit) {
+    _onUnitChanged(unit);
+  }
+
+  void _onResetUnit() {
+    setState(() {
+      _selectedUnit = null;
+      _subUnits.clear();
+      _selectedSubUnit = null;
+      _subSubUnits.clear();
+      _selectedSubSubUnit = null;
+    });
+    _applyUnitFilter();
+  }
+
   @override
   Widget build(BuildContext context) {
     final color = context.resources.color;
@@ -118,6 +150,16 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
           }
 
           final List<Contact> contacts = state.filteredContacts;
+          final bool isComplete = _isSelectionComplete;
+
+          if (_selectedUnit == null) {
+            return _UnitSelectionCards(
+              units: _units,
+              onUnitSelected: _onUnitCardTapped,
+              color: color,
+              style: style,
+            );
+          }
 
           return CustomScrollView(
             slivers: <Widget>[
@@ -132,10 +174,9 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _SearchCard(
-                        controller: _searchController,
-                        hint: 'Search by name, designation, or number',
-                        onChanged: _onSearchChanged,
+                      _SelectedUnitHeader(
+                        unit: _selectedUnit!,
+                        onReset: _onResetUnit,
                         color: color,
                         style: style,
                       ),
@@ -153,57 +194,69 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                         color: color,
                         style: style,
                       ),
-                      Gap(20.h),
-                      _ContactsListHeader(
-                        count: contacts.length,
-                        color: color,
-                        style: style,
-                      ),
-                      Gap(12.h),
+                      if (isComplete) ...[
+                        Gap(16.h),
+                        _SearchCard(
+                          controller: _searchController,
+                          hint: 'Search by name, designation, or number',
+                          onChanged: _onSearchChanged,
+                          color: color,
+                          style: style,
+                        ),
+                        Gap(20.h),
+                        _ContactsListHeader(
+                          count: contacts.length,
+                          color: color,
+                          style: style,
+                        ),
+                        Gap(12.h),
+                      ],
                     ],
                   ),
                 ),
               ),
-              if (contacts.isEmpty)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: EmptyState(style: style, color: color),
-                )
-              else
-                SliverPadding(
-                  padding: EdgeInsets.fromLTRB(
-                    _horizontalPadding.w,
-                    0,
-                    _horizontalPadding.w,
-                    _bottomPadding.h,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((
-                      BuildContext context,
-                      int index,
-                    ) {
-                      final contact = contacts[index];
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: _cardSpacing.h),
-                        child: GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) =>
-                                  ContactDetailsDialog(contact: contact),
-                            );
-                          },
-                          child: ContactCard(
-                            contact: contact,
-                            primaryPhone: contact.primaryPhone,
-                            color: color,
-                            style: style,
+              if (isComplete) ...[
+                if (contacts.isEmpty)
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: EmptyState(style: style, color: color),
+                  )
+                else
+                  SliverPadding(
+                    padding: EdgeInsets.fromLTRB(
+                      _horizontalPadding.w,
+                      0,
+                      _horizontalPadding.w,
+                      _bottomPadding.h,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((
+                        BuildContext context,
+                        int index,
+                      ) {
+                        final contact = contacts[index];
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: _cardSpacing.h),
+                          child: GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    ContactDetailsDialog(contact: contact),
+                              );
+                            },
+                            child: ContactCard(
+                              contact: contact,
+                              primaryPhone: contact.primaryPhone,
+                              color: color,
+                              style: style,
+                            ),
                           ),
-                        ),
-                      );
-                    }, childCount: contacts.length),
+                        );
+                      }, childCount: contacts.length),
+                    ),
                   ),
-                ),
+              ],
             ],
           );
         },
@@ -296,9 +349,6 @@ class _PoliceContactsAppBar extends StatelessWidget
   }
 }
 
-// ---------------------------------------------------------------------------
-// Filter section
-// ---------------------------------------------------------------------------
 
 class _FilterSection extends StatelessWidget {
   const _FilterSection({
@@ -329,49 +379,46 @@ class _FilterSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (selectedUnit == null || subUnits.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text('Filter by unit', style: style.w600s14(color.primaryTextColor)),
+        Text(
+          'Filter by sub-unit',
+          style: style.w600s14(color.primaryTextColor),
+        ),
         Gap(10.h),
-        CommonDropdown<Unit>(
-          label: 'Unit',
-          initialValue: selectedUnit,
-          items: units
-              .map(
-                (Unit unit) => DropdownMenuItem<Unit>(
-                  value: unit,
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.account_balance_rounded,
-                        size: 20.sp,
-                        color: color.primaryColor,
-                      ),
-                      Gap(8.w),
-                      Expanded(
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: CommonDropdown<Unit>(
+                label: 'Sub unit',
+                initialValue: selectedSubUnit,
+                items: subUnits
+                    .map(
+                      (Unit unit) => DropdownMenuItem<Unit>(
+                        value: unit,
                         child: Text(
                           unit.name,
                           overflow: TextOverflow.ellipsis,
                           style: style.w500s14(color.primaryTextColor),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              )
-              .toList(),
-          onChanged: onUnitChanged,
-        ),
-        if (subUnits.isNotEmpty) ...[
-          Gap(12.h),
-          Row(
-            children: <Widget>[
+                    )
+                    .toList(),
+                onChanged: onSubUnitChanged,
+              ),
+            ),
+            if (selectedSubUnit != null && subSubUnits.isNotEmpty) ...[
+              Gap(12.w),
               Expanded(
                 child: CommonDropdown<Unit>(
-                  label: 'Sub unit',
-                  initialValue: selectedSubUnit,
-                  items: subUnits
+                  label: 'Sub sub unit',
+                  initialValue: selectedSubSubUnit,
+                  items: subSubUnits
                       .map(
                         (Unit unit) => DropdownMenuItem<Unit>(
                           value: unit,
@@ -383,42 +430,181 @@ class _FilterSection extends StatelessWidget {
                         ),
                       )
                       .toList(),
-                  onChanged: onSubUnitChanged,
+                  onChanged: onSubSubUnitChanged,
                 ),
               ),
-              if (subSubUnits.isNotEmpty) ...[
-                Gap(12.w),
-                Expanded(
-                  child: CommonDropdown<Unit>(
-                    label: 'Sub sub unit',
-                    initialValue: selectedSubSubUnit,
-                    items: subSubUnits
-                        .map(
-                          (Unit unit) => DropdownMenuItem<Unit>(
-                            value: unit,
-                            child: Text(
-                              unit.name,
-                              overflow: TextOverflow.ellipsis,
-                              style: style.w500s14(color.primaryTextColor),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: onSubSubUnitChanged,
-                  ),
-                ),
-              ],
             ],
-          ),
-        ],
+          ],
+        ),
       ],
     );
   }
 }
 
-// ---------------------------------------------------------------------------
-// List header
-// ---------------------------------------------------------------------------
+class _SelectedUnitHeader extends StatelessWidget {
+  const _SelectedUnitHeader({
+    required this.unit,
+    required this.onReset,
+    required this.color,
+    required this.style,
+  });
+
+  final Unit unit;
+  final VoidCallback onReset;
+  final AppColors color;
+  final AppTextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onReset,
+      child: Container(
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: color.primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(12.r),
+          border: Border.all(color: color.primaryColor.withOpacity(0.2)),
+        ),
+        child: Row(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: color.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: unit.logo != null
+                  ? Image.asset(unit.logo!, width: 20.sp, height: 20.sp)
+                  : Icon(
+                      Icons.account_balance_rounded,
+                      size: 20.sp,
+                      color: color.white,
+                    ),
+            ),
+            Gap(12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Selected Unit',
+                    style: style.w500s12(color.primaryTextColor.withOpacity(0.6)),
+                  ),
+                  Text(unit.name, style: style.w700s16(color.primaryTextColor)),
+                ],
+              ),
+            ),
+            TextButton.icon(
+              onPressed: onReset,
+              icon: Icon(Icons.change_circle_outlined, size: 20.sp),
+              label: Text('Change', style: style.w600s14(color.primaryColor)),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _UnitSelectionCards extends StatelessWidget {
+  const _UnitSelectionCards({
+    required this.units,
+    required this.onUnitSelected,
+    required this.color,
+    required this.style,
+  });
+
+  final List<Unit> units;
+  final ValueChanged<Unit> onUnitSelected;
+  final AppColors color;
+  final AppTextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Gap(16.h),
+          Text(
+            'Select a Unit to continue',
+            style: style.w700s18(color.primaryTextColor),
+          ),
+          Gap(4.h),
+          Text(
+            'Choose the main department to see contacts',
+            style: style.w400s14(color.primaryTextColor.withOpacity(0.6)),
+          ),
+          Gap(20.h),
+          Expanded(
+            child: GridView.builder(
+              padding: EdgeInsets.only(bottom: 24.h),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16.w,
+                mainAxisSpacing: 16.h,
+                childAspectRatio: 1.1,
+              ),
+              itemCount: units.length,
+              itemBuilder: (context, index) {
+                final unit = units[index];
+                return GestureDetector(
+                  onTap: () => onUnitSelected(unit),
+                  child: Container(
+                    padding: EdgeInsets.all(16.w),
+                    decoration: BoxDecoration(
+                      color: color.white,
+                      borderRadius: BorderRadius.circular(16.r),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: color.primaryTextColor.withOpacity(0.06),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                      border: Border.all(
+                        color: color.primaryColor.withOpacity(0.05),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.all(12.w),
+                          decoration: BoxDecoration(
+                            color: color.primaryColor.withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: unit.logo != null
+                              ? Image.asset(unit.logo!, width: 24.sp, height: 24.sp)
+                              : Icon(
+                                  Icons.account_balance_rounded,
+                                  size: 24.sp,
+                                  color: color.primaryColor,
+                                ),
+                        ),
+                        Gap(12.h),
+                        Text(
+                          unit.name,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: style.w700s14(color.primaryTextColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 
 class _ContactsListHeader extends StatelessWidget {
   const _ContactsListHeader({
@@ -450,9 +636,6 @@ class _ContactsListHeader extends StatelessWidget {
   }
 }
 
-// ---------------------------------------------------------------------------
-// Search card
-// ---------------------------------------------------------------------------
 
 class _SearchCard extends StatelessWidget {
   const _SearchCard({
@@ -498,11 +681,4 @@ class _SearchCard extends StatelessWidget {
     );
   }
 }
-
-
-
-// ---------------------------------------------------------------------------
-// Contact extension
-// ---------------------------------------------------------------------------
-
 

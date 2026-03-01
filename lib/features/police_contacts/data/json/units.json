@@ -1,11 +1,13 @@
 [
   {
     "id": 1,
+    "logo": "assets/images/police_head_quarters_logo.png",
     "name": "Police Headquarters (PHQ)",
     "units": []
   },
   {
     "id": 2,
+    "logo": "assets/images/anti_terrorism_unit_police_logo.png",
     "name": "Metropolitan police",
     "units": [
       {
@@ -109,6 +111,7 @@
   },
   {
     "id": 3,
+    "logo": "assets/images/river_police_logo.png",
     "name": "Range Police",
     "units": [
       {
@@ -487,6 +490,7 @@
   },
   {
     "id": 4,
+    "logo": "assets/images/armed_police_battalion_police_logo.png",
     "name": "Armed Police Battalion",
     "units": [
       {
@@ -567,6 +571,7 @@
   },
   {
     "id": 5,
+    "logo": "assets/images/Police_Bureau_of_Investigation_police_logo.png",
     "name": "Police Training Institutes",
     "units": [
       {
@@ -613,21 +618,25 @@
   },
   {
     "id": 6,
+    "logo": "assets/images/special_branch_police_logo.png",
     "name": "Special Branch(SB)",
     "units": []
   },
   {
     "id": 7,
+    "logo": "assets/images/Police_Bureau_of_Investigation_police_logo.png",
     "name": "Criminal Investigation Department (CID)",
     "units": []
   },
   {
     "id": 8,
+    "logo": "assets/images/bangladesh_police_logo.png",
     "name": "Police Telecom",
     "units": []
   },
   {
     "id": 9,
+    "logo": "assets/images/Police_Bureau_of_Investigation_police_logo.png",
     "name": "Police Bureau of Investigation",
     "units": [
       {
@@ -682,11 +691,13 @@
   },
   {
     "id": 10,
+    "logo": "assets/images/central_police_hospital_logo.png",
     "name": "Central Police Hospital (CPH)",
     "units": []
   },
   {
     "id": 11,
+    "logo": "assets/images/highway_police_logo.png",
     "name": "Highway Police Range",
     "units": [
       {
@@ -717,6 +728,7 @@
   },
   {
     "id": 12,
+    "logo": "assets/images/bangladesh_police_logo.png",
     "name": "Railway Police Range",
     "units": [
       {
@@ -751,6 +763,7 @@
   },
   {
     "id": 13,
+    "logo": "assets/images/bangladesh_industrial_police_logo.png",
     "name": "Industrial Police Range",
     "units": [
       {
@@ -785,6 +798,7 @@
   },
   {
     "id": 14,
+    "logo": "assets/images/rab_logo.png",
     "name": "Rapid Action Battalion",
     "units": [
       {
@@ -906,11 +920,13 @@
   },
   {
     "id": 15,
+    "logo": "assets/images/tourist_police_logo.png",
     "name": "Tourist police",
     "units": []
   },
   {
     "id": 16,
+    "logo": "assets/images/river_police_logo.png",
     "name": "River Police Range",
     "units": [
       {
@@ -925,6 +941,7 @@
   },
   {
     "id": 17,
+    "logo": "assets/images/bangladesh_police_logo.png",
     "name": "Special Security and Protection Battalion(SPBn)",
     "units": [
       {
@@ -943,6 +960,7 @@
   },
   {
     "id": 18,
+    "logo": "assets/images/anti_terrorism_unit_police_logo.png",
     "name": "Anti Terrorism Unit",
     "units": [
       {
@@ -953,6 +971,7 @@
   },
   {
     "id": 19,
+    "logo": "assets/images/bangladesh_police_logo.png",
     "name": "Bangladesh Police Museum",
     "units": []
   }
