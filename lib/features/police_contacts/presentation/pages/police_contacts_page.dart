@@ -8,15 +8,19 @@ import 'package:gap/gap.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/units.dart';
 import '../../domain/usecases/police_contacts_usecase.dart';
-import '../../../core/presentation/widgets/common_text_field.dart';
-import '../../../core/presentation/widgets/common_dropdown.dart';
 import '../bloc/police_contacts_bloc.dart';
 import '../widget/contact_card.dart';
 import '../widget/contact_details_dialog.dart';
+import '../widget/contacts_list_header.dart';
 import '../widget/empty_State.dart';
 import '../widget/error_state.dart';
+import '../widget/filter_section.dart';
+import '../widget/police_contacts_app_bar.dart';
 import '../widget/police_favorite_bottomsheet.dart';
 import '../widget/loading_state.dart';
+import '../widget/search_card.dart';
+import '../widget/selected_unit_header.dart';
+import '../widget/unit_selection_cards.dart';
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -134,7 +138,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
 
     return Scaffold(
       backgroundColor: color.primaryColorBackground,
-      appBar: _PoliceContactsAppBar(color: color, style: style),
+      appBar: PoliceContactsAppBar(color: color, style: style),
       body: BlocBuilder<PoliceContactsBloc, PoliceContactsState>(
         builder: (BuildContext context, PoliceContactsState state) {
           if (state.status == PoliceContactsStatus.policeContactsLoading &&
@@ -153,7 +157,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
           final bool isComplete = _isSelectionComplete;
 
           if (_selectedUnit == null) {
-            return _UnitSelectionCards(
+            return UnitSelectionCards(
               units: _units,
               onUnitSelected: _onUnitCardTapped,
               color: color,
@@ -174,14 +178,14 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      _SelectedUnitHeader(
+                      SelectedUnitHeader(
                         unit: _selectedUnit!,
                         onReset: _onResetUnit,
                         color: color,
                         style: style,
                       ),
                       Gap(16.h),
-                      _FilterSection(
+                      FilterSection(
                         units: _units,
                         selectedUnit: _selectedUnit,
                         subUnits: _subUnits,
@@ -196,7 +200,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                       ),
                       if (isComplete) ...[
                         Gap(16.h),
-                        _SearchCard(
+                        SearchCard(
                           controller: _searchController,
                           hint: 'Search by name, designation, or number',
                           onChanged: _onSearchChanged,
@@ -204,7 +208,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                           style: style,
                         ),
                         Gap(20.h),
-                        _ContactsListHeader(
+                        ContactsListHeader(
                           count: contacts.length,
                           color: color,
                           style: style,
@@ -311,374 +315,3 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
     _applyUnitFilter();
   }
 }
-
-// ---------------------------------------------------------------------------
-// App bar & state widgets
-// ---------------------------------------------------------------------------
-
-class _PoliceContactsAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  const _PoliceContactsAppBar({required this.color, required this.style});
-
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      elevation: 0,
-      scrolledUnderElevation: 2,
-      backgroundColor: color.white,
-      leading: IconButton(
-        icon: Icon(
-          Icons.arrow_back_ios_new_rounded,
-          size: 20.sp,
-          color: color.primaryTextColor,
-        ),
-        onPressed: () => Navigator.of(context).pop(),
-      ),
-      title: Text(
-        'Police Contacts',
-        style: style.w700s18(color.primaryTextColor),
-      ),
-      centerTitle: false,
-    );
-  }
-}
-
-
-class _FilterSection extends StatelessWidget {
-  const _FilterSection({
-    required this.units,
-    required this.selectedUnit,
-    required this.subUnits,
-    required this.selectedSubUnit,
-    required this.subSubUnits,
-    required this.selectedSubSubUnit,
-    required this.onUnitChanged,
-    required this.onSubUnitChanged,
-    required this.onSubSubUnitChanged,
-    required this.color,
-    required this.style,
-  });
-
-  final List<Unit> units;
-  final Unit? selectedUnit;
-  final List<Unit> subUnits;
-  final Unit? selectedSubUnit;
-  final List<Unit> subSubUnits;
-  final Unit? selectedSubSubUnit;
-  final ValueChanged<Unit?> onUnitChanged;
-  final ValueChanged<Unit?> onSubUnitChanged;
-  final ValueChanged<Unit?> onSubSubUnitChanged;
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    if (selectedUnit == null || subUnits.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Filter by sub-unit',
-          style: style.w600s14(color.primaryTextColor),
-        ),
-        Gap(10.h),
-        Row(
-          children: <Widget>[
-            Expanded(
-              child: CommonDropdown<Unit>(
-                label: 'Sub unit',
-                initialValue: selectedSubUnit,
-                items: subUnits
-                    .map(
-                      (Unit unit) => DropdownMenuItem<Unit>(
-                        value: unit,
-                        child: Text(
-                          unit.name,
-                          overflow: TextOverflow.ellipsis,
-                          style: style.w500s14(color.primaryTextColor),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                onChanged: onSubUnitChanged,
-              ),
-            ),
-            if (selectedSubUnit != null && subSubUnits.isNotEmpty) ...[
-              Gap(12.w),
-              Expanded(
-                child: CommonDropdown<Unit>(
-                  label: 'Sub sub unit',
-                  initialValue: selectedSubSubUnit,
-                  items: subSubUnits
-                      .map(
-                        (Unit unit) => DropdownMenuItem<Unit>(
-                          value: unit,
-                          child: Text(
-                            unit.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: style.w500s14(color.primaryTextColor),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: onSubSubUnitChanged,
-                ),
-              ),
-            ],
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class _SelectedUnitHeader extends StatelessWidget {
-  const _SelectedUnitHeader({
-    required this.unit,
-    required this.onReset,
-    required this.color,
-    required this.style,
-  });
-
-  final Unit unit;
-  final VoidCallback onReset;
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onReset,
-      child: Container(
-        padding: EdgeInsets.all(12.w),
-        decoration: BoxDecoration(
-          color: color.primaryColor.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(12.r),
-          border: Border.all(color: color.primaryColor.withOpacity(0.2)),
-        ),
-        child: Row(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.all(8.w),
-              decoration: BoxDecoration(
-                color: color.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              child: unit.logo != null
-                  ? Image.asset(unit.logo!, width: 20.sp, height: 20.sp)
-                  : Icon(
-                      Icons.account_balance_rounded,
-                      size: 20.sp,
-                      color: color.white,
-                    ),
-            ),
-            Gap(12.w),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    'Selected Unit',
-                    style: style.w500s12(color.primaryTextColor.withOpacity(0.6)),
-                  ),
-                  Text(unit.name, style: style.w700s16(color.primaryTextColor)),
-                ],
-              ),
-            ),
-            TextButton.icon(
-              onPressed: onReset,
-              icon: Icon(Icons.change_circle_outlined, size: 20.sp),
-              label: Text('Change', style: style.w600s14(color.primaryColor)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _UnitSelectionCards extends StatelessWidget {
-  const _UnitSelectionCards({
-    required this.units,
-    required this.onUnitSelected,
-    required this.color,
-    required this.style,
-  });
-
-  final List<Unit> units;
-  final ValueChanged<Unit> onUnitSelected;
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Gap(16.h),
-          Text(
-            'Select a Unit to continue',
-            style: style.w700s18(color.primaryTextColor),
-          ),
-          Gap(4.h),
-          Text(
-            'Choose the main department to see contacts',
-            style: style.w400s14(color.primaryTextColor.withOpacity(0.6)),
-          ),
-          Gap(20.h),
-          Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.only(bottom: 24.h),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16.w,
-                mainAxisSpacing: 16.h,
-                childAspectRatio: 1.1,
-              ),
-              itemCount: units.length,
-              itemBuilder: (context, index) {
-                final unit = units[index];
-                return GestureDetector(
-                  onTap: () => onUnitSelected(unit),
-                  child: Container(
-                    padding: EdgeInsets.all(16.w),
-                    decoration: BoxDecoration(
-                      color: color.white,
-                      borderRadius: BorderRadius.circular(16.r),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: color.primaryTextColor.withOpacity(0.06),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                      border: Border.all(
-                        color: color.primaryColor.withOpacity(0.05),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(12.w),
-                          decoration: BoxDecoration(
-                            color: color.primaryColor.withOpacity(0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: unit.logo != null
-                              ? Image.asset(unit.logo!, width: 24.sp, height: 24.sp)
-                              : Icon(
-                                  Icons.account_balance_rounded,
-                                  size: 24.sp,
-                                  color: color.primaryColor,
-                                ),
-                        ),
-                        Gap(12.h),
-                        Text(
-                          unit.name,
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: style.w700s14(color.primaryTextColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-
-class _ContactsListHeader extends StatelessWidget {
-  const _ContactsListHeader({
-    required this.count,
-    required this.color,
-    required this.style,
-  });
-
-  final int count;
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        Text('Contacts', style: style.w700s16(color.primaryTextColor)),
-        Gap(8.w),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-          decoration: BoxDecoration(
-            color: color.primaryColor.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Text('$count', style: style.w600s12(color.primaryColor)),
-        ),
-      ],
-    );
-  }
-}
-
-
-class _SearchCard extends StatelessWidget {
-  const _SearchCard({
-    required this.controller,
-    required this.hint,
-    required this.onChanged,
-    required this.color,
-    required this.style,
-  });
-
-  final TextEditingController controller;
-  final String hint;
-  final ValueChanged<String> onChanged;
-  final AppColors color;
-  final AppTextStyle style;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: color.white,
-        borderRadius: BorderRadius.circular(12.r),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: color.primaryTextColor.withOpacity(0.06),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: CommonTextField(
-        controller: controller,
-        label: 'Search',
-        hintText: hint,
-        onChanged: onChanged,
-        prefixIcon: Icon(
-          Icons.search_rounded,
-          size: 22.sp,
-          color: color.iconColor,
-        ),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
-      ),
-    );
-  }
-}
-
