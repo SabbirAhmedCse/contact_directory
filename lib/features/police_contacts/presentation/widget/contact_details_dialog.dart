@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../domain/entities/contact.dart';
 import 'action_button.dart';
@@ -10,6 +12,56 @@ class ContactDetailsDialog extends StatelessWidget {
   final Contact contact;
 
   const ContactDetailsDialog({super.key, required this.contact});
+
+  Future<void> _makeCall() async {
+    final phone = contact.mobileNumber ?? contact.phone;
+    if (phone == null || phone.isEmpty) return;
+    final url = Uri.parse('tel:$phone');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    }
+  }
+
+  Future<void> _sendSMS() async {
+    final phone = contact.mobileNumber ?? contact.phone;
+    if (phone == null || phone.isEmpty) return;
+    final url = Uri.parse('sms:$phone');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    }
+  }
+
+  Future<void> _openWhatsApp() async {
+    final phone = contact.mobileNumber ?? contact.phone;
+    if (phone == null || phone.isEmpty) return;
+    // Remove non-numeric characters for WhatsApp link
+    final cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
+    final url = Uri.parse('https://wa.me/$cleanPhone');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  Future<void> _sendEmail() async {
+    if (contact.email == null || contact.email!.isEmpty) return;
+    final url = Uri.parse('mailto:${contact.email}');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    }
+  }
+
+  void _shareContact() {
+    final phone = contact.mobileNumber ?? contact.phone ?? 'N/A';
+    final shareText =
+        '''
+Police Contact:
+Designation: ${contact.designation ?? 'N/A'}
+Unit: ${contact.unit ?? 'N/A'}
+Phone: $phone
+Email: ${contact.email ?? 'N/A'}
+''';
+    Share.share(shareText);
+  }
 
   String _getInitials() {
     final name = contact.designation ?? '';
@@ -196,31 +248,31 @@ class ContactDetailsDialog extends StatelessWidget {
                   icon: Icons.phone_rounded,
                   label: 'Call',
                   color: const Color(0xFF43A047),
-                  onTap:  () {},
+                  onTap: _makeCall,
                 ),
                 ActionButton(
                   icon: Icons.sms_rounded,
                   label: 'SMS',
                   color: const Color(0xFF1E88E5),
-                  onTap:  () {},
+                  onTap: _sendSMS,
                 ),
                 ActionButton(
                   icon: Icons.wechat_sharp,
-                  label: 'WeChat',
+                  label: 'WhatsApp',
                   color: const Color(0xFF00C853),
-                  onTap:  () {},
+                  onTap: _openWhatsApp,
                 ),
                 ActionButton(
                   icon: Icons.email_rounded,
                   label: 'Email',
                   color: const Color(0xFFE53935),
-                  onTap:  () {},
+                  onTap: _sendEmail,
                 ),
                 ActionButton(
                   icon: Icons.share_rounded,
                   label: 'Share',
                   color: const Color(0xFF8E24AA),
-                  onTap:  () {},
+                  onTap: _shareContact,
                   isLast: true,
                 ),
               ],
@@ -242,12 +294,13 @@ class ContactDetailsDialog extends StatelessWidget {
                       child: const Text('Close'),
                     ),
                   ),
-                  if (contact.mobileNumber != null) ...[
+                  if (contact.mobileNumber != null ||
+                      contact.phone != null) ...[
                     const SizedBox(width: 12),
                     Expanded(
                       child: FilledButton.icon(
                         onPressed: () {
-                          // Add call action here
+                          _makeCall();
                           Navigator.pop(context);
                         },
                         style: FilledButton.styleFrom(

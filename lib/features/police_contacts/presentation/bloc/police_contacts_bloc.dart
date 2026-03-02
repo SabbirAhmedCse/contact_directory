@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/domain/utils/utils.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/usecases/police_contacts_usecase.dart';
 part 'police_contacts_event.dart';
@@ -42,27 +43,58 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     SearchContacts event,
     Emitter<PoliceContactsState> emit,
   ) async {
-    if (event.query.isEmpty) {
-      emit(state.copyWith(
-        status: PoliceContactsStatus.policeContactsLoaded,
-        filteredContacts: state.allContacts,
-      ));
+    final String query = event.query.trim().toLowerCase();
+
+    if (query.isEmpty) {
+      emit(
+        state.copyWith(
+          status: PoliceContactsStatus.policeContactsLoaded,
+          filteredContacts: state.allContacts,
+        ),
+      );
       return;
     }
-    final List<Contact> filtered = state.allContacts.where((Contact contact) {
-      final String q = event.query.toLowerCase();
-      final bool matchDesignation =
-          contact.designation?.toLowerCase().contains(q) ?? false;
-      final bool matchMobile =
-          contact.mobileNumber?.toLowerCase().contains(q) ?? false;
-      final bool matchPhone = contact.phone?.toLowerCase().contains(q) ?? false;
-      final bool matchUnit = contact.unit?.toLowerCase().contains(q) ?? false;
-      return matchDesignation || matchMobile || matchPhone || matchUnit;
-    }).toList();
-    emit(state.copyWith(
-      status: PoliceContactsStatus.policeContactsLoaded,
-      filteredContacts: filtered,
-    ));
+
+    final List<ScoredContact> scoredList = [];
+
+    for (final contact in state.allContacts) {
+      int score = 0;
+
+      final designation = contact.designation?.toLowerCase() ?? '';
+      final mobile = contact.mobileNumber?.toLowerCase() ?? '';
+      final phone = contact.phone?.toLowerCase() ?? '';
+      final unit = contact.unit?.toLowerCase() ?? '';
+
+      // 🔹 1. Exact match (Highest score)
+      if (designation == query) score += 50;
+      if (mobile == query) score += 50;
+      if (phone == query) score += 50;
+
+      // 🔹 2. Contains match (Medium score)
+      if (designation.contains(query)) score += 20;
+      if (mobile.contains(query)) score += 20;
+      if (phone.contains(query)) score += 20;
+      if (unit.contains(query)) score += 10;
+
+      // 🔹 3. Fuzzy match (Low score)
+      if (isFuzzyMatch(designation, query)) score += 5;
+      if (isFuzzyMatch(unit, query)) score += 5;
+
+      if (score > 0) {
+        scoredList.add(ScoredContact(contact, score));
+      }
+    }
+
+    scoredList.sort((a, b) => b.score.compareTo(a.score));
+
+    final filtered = scoredList.map((e) => e.contact).toList();
+
+    emit(
+      state.copyWith(
+        status: PoliceContactsStatus.policeContactsLoaded,
+        filteredContacts: filtered,
+      ),
+    );
   }
 
   Future<void> _onFilterContacts(
