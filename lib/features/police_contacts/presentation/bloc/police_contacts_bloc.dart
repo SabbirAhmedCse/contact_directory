@@ -103,13 +103,13 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
   ) async {
     emit(state.copyWith(status: PoliceContactsStatus.policeContactsLoading));
     final List<Contact> filteredContacts = state.allContacts.where((Contact contact) {
-      if (event.unit != null && contact.unit != event.unit) {
+      if (event.unit != null && contact.unit?.toLowerCase().trim() != event.unit?.toLowerCase().trim()) {
         return false;
       }
-      if (event.subUnit != null && contact.subUnit != event.subUnit) {
+      if (event.subUnit != null && contact.subUnit?.toLowerCase().trim() != event.subUnit?.toLowerCase().trim()) {
         return false;
       }
-      if (event.subSubUnit != null && contact.subSubUnit != event.subSubUnit) {
+      if (event.subSubUnit != null && contact.subSubUnit?.toLowerCase().trim() != event.subSubUnit?.toLowerCase().trim()) {
         return false;
       }
       return true;
