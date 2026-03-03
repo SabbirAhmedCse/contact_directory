@@ -106,7 +106,6 @@ void policeFavoriteContactsBottomSheet({
                           },
                           child: ContactCard(
                             contact: contact,
-                            primaryPhone: contact.primaryPhone,
                             color: color,
                             style: style,
                           ),

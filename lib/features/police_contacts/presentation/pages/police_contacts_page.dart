@@ -247,7 +247,6 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
                             },
                             child: ContactCard(
                               contact: contact,
-                              primaryPhone: contact.primaryPhone,
                               color: color,
                               style: style,
                             ),

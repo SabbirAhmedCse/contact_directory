@@ -25,23 +25,22 @@ class ContactAdapter extends TypeAdapter<Contact> {
       mobileNumber: fields[5] as String?,
       email: fields[6] as String?,
       phone: fields[7] as String?,
-      // Gracefully handle missing/older fields by providing sensible defaults
-      isActive: (fields[8] as bool?) ?? true,
-      isDeleted: (fields[9] as bool?) ?? false,
-      createdOn: (fields[10] as DateTime?) ?? DateTime.now(),
+      isActive: fields[8] as bool,
+      isDeleted: fields[9] as bool,
+      createdOn: fields[10] as DateTime,
       createdBy: fields[11] as String?,
-      updatedOn: (fields[12] as DateTime?) ?? DateTime.now(),
+      updatedOn: fields[12] as DateTime,
       updatedBy: fields[13] as String?,
-      deletedOn: (fields[14] as DateTime?) ?? DateTime(0),
+      deletedOn: fields[14] as DateTime,
       deletedBy: fields[15] as String?,
-      isFavorite: (fields[16] as bool?) ?? false,
+      isFavorite: fields[16] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Contact obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -110,7 +109,7 @@ Contact _$ContactFromJson(Map<String, dynamic> json) => Contact(
       updatedBy: json['updatedBy'] as String?,
       deletedOn: DateTime.parse(json['deletedOn'] as String),
       deletedBy: json['deletedBy'] as String?,
-      isFavorite: json['isFavorite'] as bool,
+      isFavorite: json['isFavorite'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$ContactToJson(Contact instance) => <String, dynamic>{

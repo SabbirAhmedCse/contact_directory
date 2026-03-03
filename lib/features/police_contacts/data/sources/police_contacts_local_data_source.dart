@@ -27,10 +27,10 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
 
       final List<Map<String, dynamic>> jsonList =
           List<Map<String, dynamic>>.from(json.decode(jsonString));
-
+      int i=1;
       final List<Contact> contactList = jsonList.map((e) {
         return Contact(
-          id: e['id'],
+          id: i++,
           unit: e['unit'] ?? '',
           subUnit: e['subUnit'] ?? '',
           subSubUnit: e['subSubUnit'] ?? '',
@@ -38,8 +38,8 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
           mobileNumber: extractValidBdNumbers(e['mobileNumber']),
           email: e['email'] ?? '',
           phone: e['phone'] ?? '',
-          isActive: e['isActive'] ?? true,
-          isDeleted: e['isDeleted'] ?? false,
+          isActive:  true,
+          isDeleted: false,
           createdOn: DateTime.now(),
           updatedOn: DateTime.now(),
           deletedOn: DateTime.now(),

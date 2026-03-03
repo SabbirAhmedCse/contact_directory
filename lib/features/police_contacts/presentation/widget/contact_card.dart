@@ -11,13 +11,11 @@ import '../bloc/police_contacts_bloc.dart';
 class ContactCard extends StatelessWidget {
   const ContactCard({super.key, 
     required this.contact,
-    required this.primaryPhone,
     required this.color,
     required this.style,
   });
 
   final Contact contact;
-  final String primaryPhone;
   final AppColors color;
   final AppTextStyle style;
 
@@ -74,7 +72,7 @@ class ContactCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
-                if (primaryPhone.isNotEmpty) ...[
+                if (contact.mobileNumber!=null && contact.mobileNumber!='') ...[
                   Gap(8.h),
                   Row(
                     children: <Widget>[
@@ -85,15 +83,14 @@ class ContactCard extends StatelessWidget {
                       ),
                       Gap(6.w),
                       SelectableText(
-                        primaryPhone,
+                        contact.mobileNumber??'',
                         style: style.w500s14(color.primaryColor),
                       ),
                     ],
                   ),
                 ],
                 if (contact.email != null &&
-                    contact.email!.isNotEmpty &&
-                    primaryPhone.isNotEmpty) ...[
+                    contact.email!.isNotEmpty) ...[
                   Gap(4.h),
                 ],
                 if (contact.email != null && contact.email!.isNotEmpty) ...[
@@ -118,7 +115,6 @@ class ContactCard extends StatelessWidget {
               ],
             ),
           ),
-          if (primaryPhone.isNotEmpty)
             Material(
               color: Colors.transparent,
               child: InkWell(

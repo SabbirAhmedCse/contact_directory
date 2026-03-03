@@ -649,16 +649,6 @@
     "phone": "02-47120270"
   },
   {
-    "id": "66",
-    "unit": "Police Headquarters (PHQ)",
-    "subUnit": "",
-    "subSubUnit": "",
-    "designation": "",
-    "mobileNumber": "",
-    "email": "",
-    "phone": ""
-  },
-  {
     "id": "67",
     "unit": "Police Headquarters (PHQ)",
     "subUnit": "",
@@ -794,7 +784,7 @@
     "subUnit": "",
     "subSubUnit": "",
     "designation": "OC, Operation Control room, PHQ",
-    "mobileNumber": "01320001299 01320001300",
+    "mobileNumber": "01320001299,01320001300",
     "email": "oic_opscr@police.gov.bd",
     "phone": "02-223381967 02-223383515 FAX: 02-9563362 02-9563363 02-9563358"
   },
