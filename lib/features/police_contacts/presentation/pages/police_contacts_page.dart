@@ -103,17 +103,13 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
     // If no unit is selected, selection is not complete
     if (_selectedUnit == null) return false;
 
-    // Selection is complete if:
-    // 1. A Unit is selected and it has no sub-units
-    if (_subUnits.isEmpty) return true;
+    // if (_subUnits.isEmpty) return true;
 
-    // 2. A Sub Unit is selected and it has no sub-sub-units
-    if (_selectedSubUnit != null && _subSubUnits.isEmpty) return true;
+    // if (_selectedSubUnit != null && _subSubUnits.isEmpty) return true;
 
-    // 3. A Sub Sub Unit is selected
-    if (_selectedSubSubUnit != null) return true;
+    // if (_selectedSubSubUnit != null) return true;
 
-    return false;
+    return true;
   }
 
   void _onUnitCardTapped(Unit unit) {

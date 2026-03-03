@@ -49,7 +49,7 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
       emit(
         state.copyWith(
           status: PoliceContactsStatus.policeContactsLoaded,
-          filteredContacts: state.allContacts,
+          filteredContacts: state.filteredByUnitContacts,
         ),
       );
       return;
@@ -57,7 +57,7 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
 
     final List<ScoredContact> scoredList = [];
 
-    for (final contact in state.allContacts) {
+    for (final contact in state.filteredByUnitContacts) {
       int score = 0;
 
       final designation = contact.designation?.toLowerCase() ?? '';
@@ -117,6 +117,7 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     emit(
       state.copyWith(
         status: PoliceContactsStatus.policeContactsLoaded,
+        filteredByUnitContacts: filteredContacts,
         filteredContacts: filteredContacts,
       ),
     );
