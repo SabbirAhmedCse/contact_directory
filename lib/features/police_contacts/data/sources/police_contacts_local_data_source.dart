@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
+import '../../../core/domain/utils/utils.dart';
 import '../../domain/entities/contact.dart';
 import '../../domain/entities/units.dart';
 import '../../domain/repositories/police_contacts_repository.dart';
@@ -34,7 +35,7 @@ class PoliceContactsLocalDataSource implements PoliceContactsRepository {
           subUnit: e['subUnit'] ?? '',
           subSubUnit: e['subSubUnit'] ?? '',
           designation: e['designation'] ?? '',
-          mobileNumber: e['mobileNumber'] ?? '',
+          mobileNumber: extractValidBdNumbers(e['mobileNumber']),
           email: e['email'] ?? '',
           phone: e['phone'] ?? '',
           isActive: e['isActive'] ?? true,
