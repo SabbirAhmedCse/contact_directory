@@ -26,12 +26,16 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
 
     try {
       final List<Contact> contacts = await policeContactsUseCase.getContacts();
+      final List<Contact> favorites = contacts
+          .where((c) => c.isFavorite)
+          .toList();
       emit(
         state.copyWith(
           status: PoliceContactsStatus.policeContactsLoaded,
           allContacts: contacts,
+          filteredByUnitContacts: contacts,
           filteredContacts: contacts,
-          favoriteContacts: contacts,
+          favoriteContacts: favorites,
         ),
       );
     } catch (_) {
@@ -137,11 +141,15 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
     final List<Contact> filteredContacts = state.filteredContacts
         .map((Contact c) => c.id == updated.id ? updated : c)
         .toList();
+    final List<Contact> favoriteContacts = allContacts
+        .where((Contact c) => c.isFavorite)
+        .toList();
     emit(
       state.copyWith(
         status: PoliceContactsStatus.policeContactsLoaded,
         allContacts: allContacts,
         filteredContacts: filteredContacts,
+        favoriteContacts: favoriteContacts,
       ),
     );
   }
@@ -180,12 +188,16 @@ class PoliceContactsBloc extends Bloc<PoliceContactsEvent, PoliceContactsState> 
       final List<Contact> filteredContacts = state.filteredContacts
           .map((Contact c) => c.id == updated.id ? updated : c)
           .toList();
+      final List<Contact> favoriteContacts = allContacts
+          .where((Contact c) => c.isFavorite)
+          .toList();
           
       emit(
         state.copyWith(
           status: PoliceContactsStatus.policeContactsLoaded,
           allContacts: allContacts,
           filteredContacts: filteredContacts,
+          favoriteContacts: favoriteContacts,
         ),
       );
     } catch (_) {

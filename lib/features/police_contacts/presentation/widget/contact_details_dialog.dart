@@ -33,20 +33,44 @@ class ContactDetailsDialog extends StatelessWidget {
 
   Future<void> _openWhatsApp() async {
     final phone = contact.mobileNumber ?? contact.phone;
-    if (phone == null || phone.isEmpty) return;
-    // Remove non-numeric characters for WhatsApp link
-    final cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
-    final url = Uri.parse('https://wa.me/$cleanPhone');
+    if (phone == null || phone.trim().isEmpty) return;
+
+    // Remove all non-digit characters
+    String cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
+
+    // Fix Bangladesh number format
+    // If starts with 0 -> replace with 880
+    if (cleanPhone.startsWith('0')) {
+      cleanPhone = '88${cleanPhone.substring(1)}';
+    }
+
+    // If already 11 digits and no country code -> add 88
+    if (cleanPhone.length == 11 && !cleanPhone.startsWith('88')) {
+      cleanPhone = '88$cleanPhone';
+    }
+
+    final Uri url = Uri.parse('https://wa.me/$cleanPhone');
+
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      debugPrint("Could not launch WhatsApp");
     }
   }
 
   Future<void> _sendEmail() async {
-    if (contact.email == null || contact.email!.isEmpty) return;
-    final url = Uri.parse('mailto:${contact.email}');
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
+    final email = contact.email;
+    if (email == null || email.trim().isEmpty) return;
+
+    final Uri emailUri = Uri(
+      scheme: 'mailto',
+      path: email
+    );
+
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      debugPrint("Could not launch Email app");
     }
   }
 

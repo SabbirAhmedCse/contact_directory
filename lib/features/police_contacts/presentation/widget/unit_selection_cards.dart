@@ -52,7 +52,7 @@ class UnitSelectionCards extends StatelessWidget {
                 return GestureDetector(
                   onTap: () => onUnitSelected(unit),
                   child: Container(
-                    padding: EdgeInsets.all(16.w),
+                    padding: EdgeInsets.all(8.w),
                     decoration: BoxDecoration(
                       color: color.white,
                       borderRadius: BorderRadius.circular(16.r),
@@ -79,16 +79,16 @@ class UnitSelectionCards extends StatelessWidget {
                           child: unit.logo != null
                               ? Image.asset(
                                   unit.logo!,
-                                  width: 24.sp,
-                                  height: 24.sp,
+                                  width: 50.sp,
+                                  height: 50.sp,
                                 )
                               : Icon(
                                   Icons.account_balance_rounded,
-                                  size: 24.sp,
+                                  size: 50.sp,
                                   color: color.primaryColor,
                                 ),
                         ),
-                        Gap(12.h),
+                        Gap(8.h),
                         Text(
                           unit.name,
                           textAlign: TextAlign.center,

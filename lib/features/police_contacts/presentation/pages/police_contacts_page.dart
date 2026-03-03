@@ -1,4 +1,3 @@
-import 'package:contact_directory/features/police_contacts/presentation/widget/contact_primary_phone.dart';
 import 'package:contact_directory/resources/resource_export.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,6 +132,7 @@ class _PoliceContactsPageState extends State<PoliceContactsPage> {
     final style = context.resources.style;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: color.primaryColorBackground,
       appBar: PoliceContactsAppBar(color: color, style: style),
       body: BlocBuilder<PoliceContactsBloc, PoliceContactsState>(
